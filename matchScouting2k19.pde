@@ -3,13 +3,12 @@ import controlP5.*;
 ControlP5 cp5;
 
 //Color Pallett
-//#059100 Islamic Green (main accent)
-//#000000 Registration Black (main color)
-//#990000 USC Cardnial (Activated Buttons)
-//#16302B Medium Jungle Green ()
-//#28061C Eerie Black ()
-//#FFFFFF White (text color)
-
+   //#059100 Islamic Green (main accent)
+   //#000000 Registration Black (text color/base color)
+   //#990000 USC Cardnial (Activated Buttons)
+   //#16302B Medium Jungle Green ()
+   //#28061C Eerie Black ()
+   //#FFFFFF White (text color/base color)d
 
 /*GUIController c;
    IFRadioController rc;
@@ -24,9 +23,11 @@ String textValue = "";
    CheckBox helloBox;
 
 void setup () {
+   B b = new B();
    fullScreen();
    PFont pfont = createFont("Arial",20,true); // use true/false for smooth/no-smooth
       ControlFont font = new ControlFont(pfont,241);
+
    //c = new GUIController(this);
       //rc = new IFRadioController("Mode Selector");
       //b1 = new IFRadioButton("Reality Distortion Field", 20, 20, rc);
@@ -47,9 +48,9 @@ void setup () {
    cp5.getTab("default")
       .activateEvent(true)
       .setLabel("Welcome")
-      .setColorActive(color(255,0,0))
+      .setColorActive(color(#059100))
       .setSize(200,20)
-      .setHeight(25)
+      .setHeight(40)
       .getCaptionLabel()
       .setFont(font)
       .setSize(24)
@@ -59,21 +60,22 @@ void setup () {
    cp5.getTab("sandstorm")
       .activateEvent(true)
       .setLabel("Sandstorm")
-      .setColorActive(color(255,0,0))
+      .setColorActive(color(#059100))
       .setSize(200,20)
-      .setHeight(25)
+      .setHeight(40)
       .getCaptionLabel()
       .setFont(font)
       .setSize(24)
       .toUpperCase(false)
       ;
-   
+    
+     //they are good at _____ they struggle with ___ they can't do ______
    cp5.getTab("teleop") 
       .activateEvent(true)
       .setLabel("Teleop")
-      .setColorActive(color(255,0,0))
+      .setColorActive(color(#059100))
       .setSize(200,20)
-      .setHeight(25)
+      .setHeight(40)
       .getCaptionLabel()
       .setFont(font)
       .setSize(24)
@@ -83,9 +85,9 @@ void setup () {
    cp5.getTab("postGame")
       .activateEvent(true)
       .setLabel("Post Game")
-      .setColorActive(color(255,0,0))
-      .setSize(200,20)
-      .setHeight(25)
+      .setColorActive(color(#059100))
+      .setSize(200,40)
+      .setHeight(40)
       .getCaptionLabel()
       .setFont(font)
       .setSize(24)
@@ -94,32 +96,42 @@ void setup () {
    cp5.getTab("settings")
       .activateEvent(true)
       .setLabel("Settings")
-      .setColorActive(color(255,0,0))
-      .setSize(200,20)
-      .setHeight(25)
-      .setHeight(25)
+      .setColorActive(color(#059100))
+      .setSize(200,40)
+      .setHeight(40)
       .getCaptionLabel()
       .setFont(font)
       .setSize(24)
       .toUpperCase(false)
    ;
 
+   cp5.addListener(b);
 
-   cp5.addCheckBox("helloBox")
+   cp5.addCheckBox("rocketCargo")
       .setPosition(100, 200)
       .setSize(20, 20)
       .setItemsPerRow(2)
       .setSpacingColumn(30)
       .setSpacingRow(20)
       .activateEvent(true)
+      .setColorActive(color(#990000))
+      //.addItem("stormCargoHigh", 0)
+      //.addItem("stormCargoHigh", 50)
+      //.addItem("stormCargoMid", 100)
+      //.addItem("stormCargoMid", 150)
+      //.addItem("rocketStormCargoLow", 200)
+      //.addItem("rocketStormCargoLow", 255)
       .addItem("1", 0)
       .addItem("2", 50)
       .addItem("3", 100)
       .addItem("4", 150)
       .addItem("5", 200)
       .addItem("6", 255)
+      .hideLabels()
       ;
-   
+      //cp5.getGroup("stormCargoHigh").setValue(1);
+      //cp5.getGroup("stormCargoMid").setValue(2);
+      //cp5.getGroup("rocketStormCargoLow").setValue(3);
    
    //look = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
       //look.baseColor = color(18,255,3);
@@ -138,15 +150,19 @@ void setup () {
   
   
 
-   /*cp5.addButton("button")
-      .setBroadcast(false)
+   cp5.addToggle("darkMode",false)
+      .setLabel("Dark Mode")
+      .setColorActive(color(#990000))
       .setPosition(100,100)
-      .setSize(80,40)
-      .setValue(1)
-      .setBroadcast(true)
-      .getCaptionLabel().align(CENTER,CENTER)
+      .setSize(200,40)
+      .setValue(0)
+      .getCaptionLabel()
+      .align(CENTER,CENTER)
+      .toUpperCase(false)
+      .setFont(pfont)
+      .setSize(24)
       ;
-     
+   /* 
    cp5.addButton("buttonValue")
       .setBroadcast(false)
       .setPosition(220,100)
@@ -210,8 +226,8 @@ void setup () {
    cp5.getController("4").moveTo("sandstorm");
    cp5.getController("5").moveTo("sandstorm");
    cp5.getController("6").moveTo("sandstorm");*/
-   cp5.getGroup("helloBox").moveTo("sandstorm");
-
+   cp5.getGroup("rocketCargo").moveTo("sandstorm");
+   cp5.getController("darkMode").moveTo("settings");
 }
 
 
@@ -219,6 +235,15 @@ void draw (){
    background(200);
    //  test.setProgress((test.getProgress() + 0.01) % 1);
 }
+
+   abstract class A implements ControlListener{
+      void rocketCargo(float theValue){
+      println(theValue);
+      }
+      public void controlEvent(ControlEvent theEvent){
+         rocketCargo(theEvent.value());
+      }
+   }
 
 void toggleAutoClear(boolean theFlag) {
   myTextfield.setAutoClear(theFlag);
@@ -236,6 +261,7 @@ void submit(int theValue) {
   myTextfield.submit();
 }
 
+class B extends A {}
 
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isAssignableFrom(Textfield.class)) {
