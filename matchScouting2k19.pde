@@ -62,12 +62,12 @@ void setup () {
    ControlFont cf1 = new ControlFont(createFont("Arial",20));
    
 
-
+   cp5.getTab("default").setColorBackground(color(eeB, la, ck));
    cp5.getTab("default")
       .activateEvent(true)
       .setLabel("Welcome")
       .setColorActive(color(is, gre, en))
-      .setColor(color(eeB, la, ck))
+      //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2, sizeingPt2)
       .setHeight(sizeingPt2 *2)
       .getCaptionLabel()
