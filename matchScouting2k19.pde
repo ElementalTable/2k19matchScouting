@@ -10,6 +10,14 @@ ControlP5 cp5;
    //#28061C Eerie Black ()
    //#FFFFFF White (text color/base color)d
 
+//Location Vars
+   int xLocation = 100;
+   int yLocation = 100;
+   int xSpacing = 100;
+   int ySpacing = 30;
+   int sizeing = 100;
+   int sizeingPt2 = 20;
+   int fontSize = 24;
 /*GUIController c;
    IFRadioController rc;
    IFProgressBar test;
@@ -49,11 +57,11 @@ void setup () {
       .activateEvent(true)
       .setLabel("Welcome")
       .setColorActive(color(#059100))
-      .setSize(200,20)
-      .setHeight(40)
+      .setSize(sizeing * 2, sizeingPt2)
+      .setHeight(sizeingPt2 *2)
       .getCaptionLabel()
       .setFont(font)
-      .setSize(24)
+      .setSize(fontSize)
       .toUpperCase(false)
       ;
 
@@ -61,11 +69,11 @@ void setup () {
       .activateEvent(true)
       .setLabel("Sandstorm")
       .setColorActive(color(#059100))
-      .setSize(200,20)
-      .setHeight(40)
+      .setSize(sizeing * 2,sizeingPt2)
+      .setHeight(sizeingPt2*2)
       .getCaptionLabel()
       .setFont(font)
-      .setSize(24)
+      .setSize(fontSize)
       .toUpperCase(false)
       ;
     
@@ -74,11 +82,11 @@ void setup () {
       .activateEvent(true)
       .setLabel("Teleop")
       .setColorActive(color(#059100))
-      .setSize(200,20)
-      .setHeight(40)
+      .setSize(sizeing * 2,sizeingPt2)
+      .setHeight(sizeingPt2*2)
       .getCaptionLabel()
       .setFont(font)
-      .setSize(24)
+      .setSize(fontSize)
       .toUpperCase(false)
       ;
 
@@ -86,47 +94,58 @@ void setup () {
       .activateEvent(true)
       .setLabel("Post Game")
       .setColorActive(color(#059100))
-      .setSize(200,40)
-      .setHeight(40)
+      .setSize(sizeing * 2,sizeingPt2)
+      .setHeight(sizeingPt2*2)
       .getCaptionLabel()
       .setFont(font)
-      .setSize(24)
+      .setSize(fontSize)
       .toUpperCase(false)
       ;
    cp5.getTab("settings")
       .activateEvent(true)
       .setLabel("Settings")
       .setColorActive(color(#059100))
-      .setSize(200,40)
-      .setHeight(40)
+      .setSize(sizeing * 2,sizeingPt2)
+      .setHeight(sizeingPt2*2)
       .getCaptionLabel()
       .setFont(font)
-      .setSize(24)
+      .setSize(fontSize)
       .toUpperCase(false)
    ;
 
    cp5.addListener(b);
 
    cp5.addCheckBox("rocketCargo")
-      .setPosition(100, 200)
-      .setSize(20, 20)
+      .setPosition(xLocation, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
       .setItemsPerRow(2)
-      .setSpacingColumn(30)
-      .setSpacingRow(20)
+      .setSpacingColumn(ySpacing)
+      .setSpacingRow(xSpacing/5)
       .activateEvent(true)
       .setColorActive(color(#990000))
-      //.addItem("stormCargoHigh", 0)
-      //.addItem("stormCargoHigh", 50)
-      //.addItem("stormCargoMid", 100)
-      //.addItem("stormCargoMid", 150)
-      //.addItem("rocketStormCargoLow", 200)
-      //.addItem("rocketStormCargoLow", 255)
-      .addItem("1", 0)
-      .addItem("2", 50)
-      .addItem("3", 100)
-      .addItem("4", 150)
-      .addItem("5", 200)
-      .addItem("6", 255)
+      .addItem("stormCargoHigh",1)
+      .addItem("stormCargoHigh1",2)
+      .addItem("stormCargoMid",3)
+      .addItem("stormCargoMid1",4)
+      .addItem("rocketStormCargoLow",5)
+      .addItem("rocketStormCargoLow1",6)
+      .hideLabels()
+      ;
+
+   cp5.addCheckBox("rocketHatch")
+      .setPosition(xLocation/2, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(xSpacing+(xSpacing/5))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(color(#990000))
+      .addItem("stormHatchHigh",1)
+      .addItem("stormHatchHigh1",2)
+      .addItem("stormHatchMid",3)
+      .addItem("stormHatchMid1",4)
+      .addItem("rocketHatchCargoLow",5)
+      .addItem("rocketHatchCargoLow1",6)
       .hideLabels()
       ;
       //cp5.getGroup("stormCargoHigh").setValue(1);
@@ -153,14 +172,14 @@ void setup () {
    cp5.addToggle("darkMode",false)
       .setLabel("Dark Mode")
       .setColorActive(color(#990000))
-      .setPosition(100,100)
-      .setSize(200,40)
+      .setPosition(xLocation,yLocation)
+      .setSize(sizeing*2,sizeingPt2)
       .setValue(0)
       .getCaptionLabel()
       .align(CENTER,CENTER)
       .toUpperCase(false)
       .setFont(pfont)
-      .setSize(24)
+      .setSize(fontSize)
       ;
    /* 
    cp5.addButton("buttonValue")
@@ -191,14 +210,14 @@ void setup () {
       ;
    */
    myTextfield = cp5.addTextfield("textinput")
-      .setPosition(100, 200)
-      .setSize(200, 20)
+      .setPosition(xLocation, yLocation*2)
+      .setSize(sizeing*2, sizeingPt2)
       .setFocus(true)
       ;
 
    cp5.addTextfield("textValue")
-      .setPosition(100, 300)
-      .setSize(200, 20)
+      .setPosition(xLocation, yLocation*3)
+      .setSize(sizeing*2, sizeingPt2)
       ;
    myTextfield.setAutoClear(true).keepFocus(true);
 
@@ -227,6 +246,7 @@ void setup () {
    cp5.getController("5").moveTo("sandstorm");
    cp5.getController("6").moveTo("sandstorm");*/
    cp5.getGroup("rocketCargo").moveTo("sandstorm");
+   cp5.getGroup("rocketHatch").moveTo("sandstorm");
    cp5.getController("darkMode").moveTo("settings");
 }
 
