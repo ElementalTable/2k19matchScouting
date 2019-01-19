@@ -5,10 +5,18 @@ ControlP5 cp5;
 //Color Pallett
    //#059100 Islamic Green (main accent)
    //#000000 Registration Black (text color/base color)
-   //#990000 USC Cardnial (Activated Buttons)
-   //#16302B Medium Jungle Green ()
-   //#28061C Eerie Black ()
-   //#FFFFFF White (text color/base color)d
+   //#990000 USC Cardnial (Unactivated Buttons)
+   //#16302B Medium Jungle Green (Activated Buttions)
+   //#28061C Eerie Black (Unactivated Button )
+   //#FFFFFF White (text color/base color)
+
+//Color Vars  
+   int is = 5; int gre = 145; int en = 0;
+   int reBlack = 0;
+   int usc = 153; int ca = 0; int rd = 0;
+   int mi = 22; int dGre = 48; int enn = 43;
+   int eeB = 40; int la = 6; int ck = 28;
+   int white = 0;
 
 //Location Vars
    int xLocation = 100;
@@ -52,23 +60,29 @@ void setup () {
    cp5 = new ControlP5 (this);
 
    ControlFont cf1 = new ControlFont(createFont("Arial",20));
+   
+
 
    cp5.getTab("default")
       .activateEvent(true)
       .setLabel("Welcome")
-      .setColorActive(color(#059100))
+      .setColorActive(color(is, gre, en))
+      .setColor(color(eeB, la, ck))
       .setSize(sizeing * 2, sizeingPt2)
       .setHeight(sizeingPt2 *2)
       .getCaptionLabel()
       .setFont(font)
       .setSize(fontSize)
       .toUpperCase(false)
+      //.getColor()
+      //.setColor(color(eeB, la, ck))
       ;
 
    cp5.getTab("sandstorm")
       .activateEvent(true)
       .setLabel("Sandstorm")
-      .setColorActive(color(#059100))
+      .setColorActive(color(is, gre, en))
+      //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
       .getCaptionLabel()
@@ -77,11 +91,12 @@ void setup () {
       .toUpperCase(false)
       ;
     
-     //they are good at _____ they struggle with ___ they can't do ______
+     
    cp5.getTab("teleop") 
       .activateEvent(true)
       .setLabel("Teleop")
-      .setColorActive(color(#059100))
+      .setColorActive(color(is, gre, en))
+      //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
       .getCaptionLabel()
@@ -93,18 +108,20 @@ void setup () {
    cp5.getTab("postGame")
       .activateEvent(true)
       .setLabel("Post Game")
-      .setColorActive(color(#059100))
+      .setColorActive(color(is, gre, en))
+      //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
       .getCaptionLabel()
       .setFont(font)
       .setSize(fontSize)
-      .toUpperCase(false)
+      .toUpperCase(false) //they are good at _____ they struggle with ___ they can't do ______
       ;
    cp5.getTab("settings")
       .activateEvent(true)
       .setLabel("Settings")
-      .setColorActive(color(#059100))
+      .setColorActive(color(is, gre, en))
+      //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
       .getCaptionLabel()
@@ -122,7 +139,7 @@ void setup () {
       .setSpacingColumn(ySpacing)
       .setSpacingRow(xSpacing/5)
       .activateEvent(true)
-      .setColorActive(color(#990000))
+      .setColorActive(color(usc, ca,rd))
       .addItem("stormCargoHigh",1)
       .addItem("stormCargoHigh1",2)
       .addItem("stormCargoMid",3)
@@ -139,7 +156,7 @@ void setup () {
       .setSpacingColumn(xSpacing+(xSpacing/5))
       .setSpacingRow(ySpacing)
       .activateEvent(true)
-      .setColorActive(color(#990000))
+      .setColorActive(color(usc, ca, rd))
       .addItem("stormHatchHigh",1)
       .addItem("stormHatchHigh1",2)
       .addItem("stormHatchMid",3)
@@ -171,9 +188,9 @@ void setup () {
 
    cp5.addToggle("darkMode",false)
       .setLabel("Dark Mode")
-      .setColorActive(color(#990000))
+      .setColorActive(color(usc, ca, rd))
       .setPosition(xLocation,yLocation)
-      .setSize(sizeing*2,sizeingPt2)
+      .setSize(sizeing*2,sizeingPt2*2)
       .setValue(0)
       .getCaptionLabel()
       .align(CENTER,CENTER)
@@ -252,7 +269,7 @@ void setup () {
 
 
 void draw (){   
-   background(200);
+   background(#FFFFFF);
    //  test.setProgress((test.getProgress() + 0.01) % 1);
 }
 
@@ -328,3 +345,114 @@ public void textinput(String theText) {
   // receiving text from controller textinput
   println("a textfield event for controller 'textinput': "+theText);
 }
+
+/*void loadJSON(int MATCH) {
+  values = loadJSONArray("dataIn.json");
+  //println("match: " + MATCH);
+  //println("scout: " + child.scout);
+
+  int i = MATCH;
+  println(MATCH);
+  //i = i+child.scout;
+  i--;
+
+  JSONObject match = values.getJSONObject(i); 
+  JSONObject alliances = match.getJSONObject("alliances");
+  JSONObject redAlli = alliances.getJSONObject("red");
+  JSONArray redAllia = redAlli.getJSONArray("team_keys");
+  String[] red = redAllia.getStringArray();
+  JSONObject blueAlli = alliances.getJSONObject("blue");
+  JSONArray blueAllia = blueAlli.getJSONArray("team_keys");
+  String[] blue = blueAllia.getStringArray();
+  String TEAMNUMBER = "0000";
+
+  if (child.scout == 1) {
+    alli = "blue";
+    TEAMNUMBER = red[0].replaceAll("[\\D]", "");
+  } 
+  if (child.scout == 2) {
+    alli = "blue";
+    TEAMNUMBER = red[1].replaceAll("[\\D]", "");
+  } 
+  if (child.scout == 3) {
+    alli = "blue";
+    TEAMNUMBER = red[2].replaceAll("[\\D]", "");
+  } 
+  if (child.scout == 4) {
+    alli = "blue";
+    TEAMNUMBER = blue[0].replaceAll("[\\D]", "");
+  } 
+  if (child.scout == 5) {
+    alli = "blue";
+    TEAMNUMBER = blue[1].replaceAll("[\\D]", "");
+  } 
+  if (child.scout == 6) {
+    alli = "blue";
+    TEAMNUMBER = blue[2].replaceAll("[\\D]", "");
+  }
+
+
+  //String tournament = match.getString("Tournament");
+  //alli = match.getString("alliance");
+
+  //int MATCHNUM = match.getInt("Match #");
+  //int TEAMNUM = match.getInt("Team #");
+
+  //String TEAMNUMs = str(TEAMNUM);
+
+  //println(i + ", " + alli + ", " + MATCHNUM + ", " + TEAMNUM + ", " + tournament);
+  //println(alli);
+  updateAlli(); 
+  teamNumber.input = TEAMNUMBER;
+}
+void saveJSON() {
+  JSONArray values1;
+  if (matchNumber.start > 1) {
+    values1 = loadJSONArray("dataOut.json");
+  } else {
+    values1 = new JSONArray();
+  }
+
+  int id = (matchNumber.start-1)*6;
+  id = id+child.scout;
+  id--;
+
+  i = matchNumber.start;
+  JSONObject match = new JSONObject();//(i);
+
+  match.setInt("FactId", id);
+  match.setInt("Match #", matchNumber.start);
+  match.setInt("Team #", int(teamNumber.input));
+  match.setInt("Portal", portal.count);
+  //print(portal.count);
+  //println("portal count");
+  match.setInt("Cube Pile Zone", cubePileZone.count);
+  match.setInt("Opponent Cube Line Zone", opponentCubeLineZone.count);
+  match.setInt("Alliance Switch", allianceSwitch.count);
+  match.setInt("Scale", scale.count);
+  match.setInt("Opponent Switch", opponentSwitch.count);
+  match.setInt("Exchange Drop Off", exchangeDropoff.count);
+  match.setInt("Exchange Pick Up", exchangePickup.count);
+  match.setInt("Cube Line Zone", cubeLineZone.count);
+  match.setString("Scout Name", teamMember.input);
+  match.setInt("Scout Number", child.scout);
+
+  match.setBoolean("Disabled", disabled.isChecked);
+  match.setBoolean("Parts on the Field", potf.isChecked);
+  match.setBoolean("Flip", flippedOver.isChecked);
+  match.setBoolean("Attempted Climb", attemptedClimb.isChecked);
+  match.setBoolean("Successful Climb", successfulClimb.isChecked);
+  match.setBoolean("No Show", noShow.isChecked);
+  match.setInt("Tournament", tournament.checkedBox); 
+  match.setBoolean("Yellow Card", yellowCard.isChecked);
+  match.setBoolean("Red Card", redCard.isChecked);
+  match.setBoolean("Tech Foul", techFoul1.isChecked);
+  match.setBoolean("Foul", foul1.isChecked);
+  match.setInt( "Dropped Box", droppedBox.count);
+  match.setInt( "Foul", foulCounter);
+  match.setInt( "Tech Foul", techFoulCounter);
+  match.setBoolean("Assisted Climb", assistedClimb.isChecked);
+
+  values1.setJSONObject(i-1, match);
+  saveJSONArray(values1, "data/dataOut.json");
+}*/
