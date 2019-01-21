@@ -6,7 +6,7 @@ ControlP5 cp5;
    //#059100 Islamic Green (main accent)
    //#000000 Registration Black (text color/base color)
    //#990000 USC Cardnial (Unactivated Buttons)
-   //#16302B Medium Jungle Green (Activated Buttions)
+   //#16302B Medium Jungle Green (Activated Buttons)
    //#28061C Eerie Black (Unactivated Button )
    //#FFFFFF White (text color/base color)
 
@@ -16,12 +16,17 @@ ControlP5 cp5;
    int usc = 153; int ca = 0; int rd = 0;
    int mi = 22; int dGre = 48; int enn = 43;
    int eeB = 40; int la = 6; int ck = 28;
-   int white = 0;
+   int white = 255;
+   
+   color backgroundCl;
+   color textCl;
+   color unactiveBut;
+   color activeBut;
 
 //Location Vars
    int xLocation = 100;
    int yLocation = 100;
-   int xSpacing = 100;
+   int xSpacing = 105;
    int ySpacing = 30;
    int sizeing = 100;
    int sizeingPt2 = 20;
@@ -33,6 +38,9 @@ ControlP5 cp5;
    IFRadioButton b1, b2, b3, b4;
    IFCheckBox c1, c2, c3, c4;
    IFButton d1;*/  
+   
+//Active Tab Var
+   int activeTab;
 
 String textValue = "";
    Textfield myTextfield;
@@ -43,7 +51,6 @@ void setup () {
    fullScreen();
    PFont pfont = createFont("Arial",20,true); // use true/false for smooth/no-smooth
       ControlFont font = new ControlFont(pfont,241);
-
    //c = new GUIController(this);
       //rc = new IFRadioController("Mode Selector");
       //b1 = new IFRadioButton("Reality Distortion Field", 20, 20, rc);
@@ -60,13 +67,20 @@ void setup () {
    cp5 = new ControlP5 (this);
 
    ControlFont cf1 = new ControlFont(createFont("Arial",20));
+   backgroundCl = white;
+   textCl = reBlack;
+   unactiveBut = color(usc,ca,rd);
+   activeBut = color(mi, dGre, enn);
    
 
-   cp5.getTab("default").setColorBackground(color(eeB, la, ck));
+   //cp5.getTab("default").setColorBackground(color(eeB, la, ck));
    cp5.getTab("default")
       .activateEvent(true)
+      .setId(0)
       .setLabel("Welcome")
+      .setColorValue(color(textCl))
       .setColorActive(color(is, gre, en))
+      .setColorBackground(color(eeB, la, ck))
       //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2, sizeingPt2)
       .setHeight(sizeingPt2 *2)
@@ -80,8 +94,10 @@ void setup () {
 
    cp5.getTab("sandstorm")
       .activateEvent(true)
+      .setId(1)
       .setLabel("Sandstorm")
       .setColorActive(color(is, gre, en))
+      .setColorBackground(color(eeB, la, ck))
       //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
@@ -94,8 +110,10 @@ void setup () {
      
    cp5.getTab("teleop") 
       .activateEvent(true)
+      .setId(2)
       .setLabel("Teleop")
       .setColorActive(color(is, gre, en))
+      .setColorBackground(color(eeB, la, ck))
       //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
@@ -107,8 +125,10 @@ void setup () {
 
    cp5.getTab("postGame")
       .activateEvent(true)
+      .setId(3)
       .setLabel("Post Game")
       .setColorActive(color(is, gre, en))
+      .setColorBackground(color(eeB, la, ck))
       //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
@@ -119,8 +139,10 @@ void setup () {
       ;
    cp5.getTab("settings")
       .activateEvent(true)
+      .setId(4)
       .setLabel("Settings")
       .setColorActive(color(is, gre, en))
+      .setColorBackground(color(eeB, la, ck))
       //.setColor(color(eeB, la, ck))
       .setSize(sizeing * 2,sizeingPt2)
       .setHeight(sizeingPt2*2)
@@ -131,15 +153,17 @@ void setup () {
    ;
 
    cp5.addListener(b);
-
-   cp5.addCheckBox("rocketCargo")
-      .setPosition(xLocation, yLocation*2)
+   //---------------------------------------------------------------------------ROCKET1---------------------------------------------------------------------------------
+//Sandstorm Rocket1 Checkboxes
+   cp5.addCheckBox("rocket1CargoSand")
+      .setPosition(xLocation*1.48, yLocation*2)
       .setSize(sizeingPt2, sizeingPt2)
       .setItemsPerRow(2)
       .setSpacingColumn(ySpacing)
       .setSpacingRow(xSpacing/5)
       .activateEvent(true)
-      .setColorActive(color(usc, ca,rd))
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
       .addItem("stormCargoHigh",1)
       .addItem("stormCargoHigh1",2)
       .addItem("stormCargoMid",3)
@@ -149,14 +173,15 @@ void setup () {
       .hideLabels()
       ;
 
-   cp5.addCheckBox("rocketHatch")
-      .setPosition(xLocation/2, yLocation*2)
+   cp5.addCheckBox("rocket1HatchSand")
+      .setPosition(xLocation, yLocation*2)
       .setSize(sizeingPt2, sizeingPt2)
       .setItemsPerRow(2)
       .setSpacingColumn(xSpacing+(xSpacing/5))
       .setSpacingRow(ySpacing)
       .activateEvent(true)
-      .setColorActive(color(usc, ca, rd))
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
       .addItem("stormHatchHigh",1)
       .addItem("stormHatchHigh1",2)
       .addItem("stormHatchMid",3)
@@ -165,6 +190,231 @@ void setup () {
       .addItem("rocketHatchCargoLow1",6)
       .hideLabels()
       ;
+    //Teleop Rocket1 Checkboxes  
+   cp5.addCheckBox("rocket1CargoTele")
+      .setPosition(xLocation*1.48, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(ySpacing)
+      .setSpacingRow(xSpacing/5)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("teleCargoHigh",1)
+      .addItem("teleCargoHigh1",2)
+      .addItem("teleCargoMid",3)
+      .addItem("teleCargoMid1",4)
+      .addItem("rocketTeleCargoLow",5)
+      .addItem("rocketTeleCargoLow1",6)
+      .hideLabels()
+      ;
+
+   cp5.addCheckBox("rocket1HatchTele")
+      .setPosition(xLocation, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(xSpacing+(xSpacing/5))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("teleHatchHigh",1)
+      .addItem("teleHatchHigh1",2)
+      .addItem("teleHatchMid",3)
+      .addItem("teleHatchMid1",4)
+      .addItem("rocketTeleHatchLow",5)
+      .addItem("rocketTeleHatchLow1",6)
+      .hideLabels()
+      ;
+      
+      //-------------------------------------------------------------------------ROCKET2-----------------------------------------------------------------------------------------
+   //Rocket 2 Cargo Sandstorm
+   cp5.addCheckBox("rocket2CargoSand")
+      .setPosition(xLocation*3.98, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(ySpacing)
+      .setSpacingRow(xSpacing/5)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("rocket2stormCargoHigh",1)
+      .addItem("rocket2stormCargoHigh1",2)
+      .addItem("rocket2stormCargoMid",3)
+      .addItem("rocket2stormCargoMid1",4)
+      .addItem("rocket2StormCargoLow",5)
+      .addItem("rocket2StormCargoLow1",6)
+      .hideLabels()
+      ;
+
+   cp5.addCheckBox("rocket2HatchSand")
+      .setPosition(xLocation*3.5, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(xSpacing+(xSpacing/5))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("rocket2stormHatchHigh",1)
+      .addItem("rocket2stormHatchHigh1",2)
+      .addItem("rocket2stormHatchMid",3)
+      .addItem("rocket2stormHatchMid1",4)
+      .addItem("rocket2HatchCargoLow",5)
+      .addItem("rocket2HatchCargoLow1",6)
+      .hideLabels()
+      ;
+    //Rocket 2 Teleop checkboxes  
+   cp5.addCheckBox("rocket2CargoTele")
+      .setPosition(xLocation*3.98, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(ySpacing)
+      .setSpacingRow(xSpacing/5)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("rocket2teleCargoHigh",1)
+      .addItem("rocket2teleCargoHigh1",2)
+      .addItem("rocket2teleCargoMid",3)
+      .addItem("rocket2teleCargoMid1",4)
+      .addItem("rocket2TeleCargoLow",5)
+      .addItem("rocket2TeleCargoLow1",6)
+      .hideLabels()
+      ;
+
+   cp5.addCheckBox("rocket2HatchTele")
+      .setPosition(xLocation*3.5, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(2)
+      .setSpacingColumn(xSpacing+(xSpacing/5))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("rocket2teleHatchHigh",1)
+      .addItem("rocket2teleHatchHigh1",2)
+      .addItem("rocket2teleHatchMid",3)
+      .addItem("rocket2teleHatchMid1",4)
+      .addItem("rocket2TeleHatchLow",5)
+      .addItem("rocket2TeleHatchLow1",6)
+      .hideLabels()
+      ;
+      
+      
+      
+      //---------------------------------------------------------------------CARGOSHIP-------------------------------------------------------------
+      //Ship Cargo Teleop
+   cp5.addCheckBox("shipCargoTele")
+      .setPosition(xLocation*10, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(4)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("shipTeleCargo1",1)
+      .addItem("shipTeleCargo2",2)
+      .addItem("shipTeleCargo3",3)
+      .addItem("shipTeleCargoFront1",4)
+      .addItem("shipTeleCargoFront2",5)
+      .addItem("shipTeleCargo4",6)
+      .addItem("shipTeleCargo5",7)
+      .addItem("shipTeleCargo6",8)
+      .hideLabels()
+      ;
+      
+      //Ship Hatch Teleop
+    cp5.addCheckBox("shipHatchTele")
+      .setPosition(xLocation*7, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(4)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("shipTeleHatch1",1)
+      .addItem("shipTeleHatch2",2)
+      .addItem("shipTeleHatch3",3)
+      .addItem("shipTeleHatchFront1",4)
+      .addItem("shipTeleHatchFront2",5)
+      .addItem("shipTeleHatch4",6)
+      .addItem("shipTeleHatch5",7)
+      .addItem("shipTeleHatch6",8)
+      .hideLabels()
+      ;
+      
+      
+      
+       //Ship Cargo Sandstorm
+   cp5.addCheckBox("shipCargoSand")
+      .setPosition(xLocation*10, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(4)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("shipSandCargo1",1)
+      .addItem("shipSandCargo2",2)
+      .addItem("shipSandCargo3",3)
+      .addItem("shipSandCargoFront1",4)
+      .addItem("shipSandCargoFront2",5)
+      .addItem("shipSandCargo4",6)
+      .addItem("shipSandCargo5",7)
+      .addItem("shipSandCargo6",8)
+      .hideLabels()
+      ;
+      
+      //Ship Hatch Sandstorm
+    cp5.addCheckBox("shipHatchSand")
+      .setPosition(xLocation*7, yLocation*2)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(4)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("shipSandHatch1",1)
+      .addItem("shipSandHatch2",2)
+      .addItem("shipSandHatch3",3)
+      .addItem("shipSandHatchFront1",4)
+      .addItem("shipSandHatchFront2",5)
+      .addItem("shipSandHatch4",6)
+      .addItem("shipSandHatch5",7)
+      .addItem("shipSandHatch6",8)
+      .hideLabels()
+      ;
+      
+      //----------------------------------------------------------------------FOULS/TECHFOULS---------------------------------------------------------------------------------------
+     cp5.addRadioButton("techFoul")
+      .setPosition(xLocation, yLocation*5)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(1)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("lessThanOneTech",1)
+      .addItem("oneTech",2)
+      .addItem("twoTech",3)
+      .addItem("threeTech",4)
+      .addItem("fourTech",5)
+      .addItem("moreThanFourTech",1)
+      .setFont(font)
+     
+      ;
+      cp5.getController("lessThanOneTech").setLabel("<1");
+      cp5.getController("oneTech").setLabel("1");
+      cp5.getController("twoTech").setLabel("2");
+      cp5.getController("threeTech").setLabel("3");
+      cp5.getController("fourTech").setLabel("4");
+       cp5.getController("moreThanFourTech").setLabel(">4");
       //cp5.getGroup("stormCargoHigh").setValue(1);
       //cp5.getGroup("stormCargoMid").setValue(2);
       //cp5.getGroup("rocketStormCargoLow").setValue(3);
@@ -186,9 +436,10 @@ void setup () {
   
   
 
-   cp5.addToggle("darkMode",false)
+   cp5.addToggle("toggleDarkMode",false)
       .setLabel("Dark Mode")
-      .setColorActive(color(usc, ca, rd))
+      .setColorActive(color(activeBut))
+      .setColorBackground(color(unactiveBut))
       .setPosition(xLocation,yLocation)
       .setSize(sizeing*2,sizeingPt2*2)
       .setValue(0)
@@ -226,13 +477,13 @@ void setup () {
       .setBroadcast(true)
       ;
    */
-   myTextfield = cp5.addTextfield("textinput")
+   myTextfield = cp5.addTextfield("textinput").setColorValue(color(textCl))
       .setPosition(xLocation, yLocation*2)
       .setSize(sizeing*2, sizeingPt2)
       .setFocus(true)
       ;
 
-   cp5.addTextfield("textValue")
+   cp5.addTextfield("textValue").setColorValue(color(textCl))
       .setPosition(xLocation, yLocation*3)
       .setSize(sizeing*2, sizeingPt2)
       ;
@@ -241,8 +492,8 @@ void setup () {
    cp5.addButton("clear", 0, 20, 200, 70, 20);
       cp5.addButton("submit", 0, 310, 200, 60, 20);
       cp5.addButton("performTextfieldActions", 0, 20, 100, 150, 20);
-      cp5.addToggle("toggleAutoClear", true, 180, 100, 90, 20).setCaptionLabel("Auto Clear");
-      cp5.addToggle("toggleKeepFocus", true, 280, 100, 90, 20).setCaptionLabel("Keep Focus");
+      cp5.addToggle("toggleAutoClear", true, 180, 100, 90, 20).setCaptionLabel("Auto Clear").setColorValue(color(textCl));
+      cp5.addToggle("toggleKeepFocus", true, 280, 100, 90, 20).setCaptionLabel("Keep Focus").setColorValue(color(textCl));
 
    //cp5.getController("sliderValue").moveTo("sneeze");
    //cp5.getController("slider").moveTo("sneeze");
@@ -262,15 +513,37 @@ void setup () {
    cp5.getController("4").moveTo("sandstorm");
    cp5.getController("5").moveTo("sandstorm");
    cp5.getController("6").moveTo("sandstorm");*/
-   cp5.getGroup("rocketCargo").moveTo("sandstorm");
-   cp5.getGroup("rocketHatch").moveTo("sandstorm");
-   cp5.getController("darkMode").moveTo("settings");
+   cp5.getGroup("rocket1CargoSand").moveTo("sandstorm");
+   cp5.getGroup("rocket1HatchSand").moveTo("sandstorm");
+   cp5.getGroup("rocket2CargoSand").moveTo("sandstorm");
+   cp5.getGroup("rocket2HatchSand").moveTo("sandstorm");
+   cp5.getGroup("shipCargoSand").moveTo("sandstorm");
+   cp5.getGroup("shipHatchSand").moveTo("sandstorm");
+   cp5.getGroup("rocket1CargoTele").moveTo("teleop");
+   cp5.getGroup("rocket1HatchTele").moveTo("teleop");
+   cp5.getGroup("rocket2CargoTele").moveTo("teleop");
+   cp5.getGroup("rocket2HatchTele").moveTo("teleop");
+   cp5.getGroup("shipCargoTele").moveTo("teleop");
+   cp5.getGroup("shipHatchTele").moveTo("teleop");
+   cp5.getController("toggleDarkMode").moveTo("settings");
 }
 
 
 void draw (){   
-   background(#FFFFFF);
+   background(backgroundCl);
+   fill(textCl);
+   stroke(textCl);
    //  test.setProgress((test.getProgress() + 0.01) % 1);
+   
+   //UI Elements
+   if(activeTab == 1 || activeTab==2){ //If on Sandstorm or Teleop tabs
+     line(0,(height/2),width,(height/2)); //Draw horisontal line
+     textSize(fontSize);
+     text("Left Rocket",xLocation*1.05,yLocation*1.8);
+     text("Right Rocket",xLocation*3.46,yLocation*1.8);
+     text("Ship Hatches",xLocation*6.96,yLocation*1.8);
+     text("Ship Cargo",xLocation*10.1,yLocation*1.8);
+   }
 }
 
    abstract class A implements ControlListener{
@@ -279,11 +552,26 @@ void draw (){
       }
       public void controlEvent(ControlEvent theEvent){
          rocketCargo(theEvent.value());
+         
+         if (theEvent.isTab()) {
+           activeTab = theEvent.getTab().getId();
+         }
       }
    }
 
 void toggleAutoClear(boolean theFlag) {
   myTextfield.setAutoClear(theFlag);
+}
+
+void toggleDarkMode(boolean darkMode){
+  if(darkMode == true){
+    backgroundCl=reBlack;
+    textCl = white;
+  }
+  else{
+    backgroundCl=white;
+    textCl = reBlack;
+  }
 }
 
 void toggleKeepFocus(boolean theFlag) {
