@@ -13,8 +13,8 @@ ControlP5 cp5;
 //Color Vars  
    int is = 5; int gre = 145; int en = 0;
    int reBlack = 0;
-   int usc = 153; int ca = 0; int rd = 0;
-   int mi = 22; int dGre = 48; int enn = 43;
+   int usc = 12; int ca = 40; int rd = 0;
+   int mi = 0; int dGre = 180; int enn = 180;
    int eeB = 40; int la = 6; int ck = 28;
    int white = 255;
    
@@ -50,7 +50,8 @@ void setup () {
    B b = new B();
    fullScreen();
    PFont pfont = createFont("Arial",20,true); // use true/false for smooth/no-smooth
-      ControlFont font = new ControlFont(pfont,241);
+        ControlFont font = new ControlFont(pfont,15);
+
    //c = new GUIController(this);
       //rc = new IFRadioController("Mode Selector");
       //b1 = new IFRadioButton("Reality Distortion Field", 20, 20, rc);
@@ -66,12 +67,12 @@ void setup () {
   
    cp5 = new ControlP5 (this);
 
-   ControlFont cf1 = new ControlFont(createFont("Arial",20));
+   //ControlFont cf1 = new ControlFont(createFont("Arial",20));
+   
    backgroundCl = white;
    textCl = reBlack;
    unactiveBut = color(usc,ca,rd);
    activeBut = color(mi, dGre, enn);
-   
 
    //cp5.getTab("default").setColorBackground(color(eeB, la, ck));
    cp5.getTab("default")
@@ -391,8 +392,9 @@ void setup () {
       ;
       
       //----------------------------------------------------------------------FOULS/TECHFOULS---------------------------------------------------------------------------------------
-     cp5.addRadioButton("techFoul")
-      .setPosition(xLocation, yLocation*5)
+       //Storm tech fouls
+     cp5.addRadioButton("techFoulStorm")
+      .setPosition(xLocation, yLocation*4.7)
       .setSize(sizeingPt2, sizeingPt2)
       .setItemsPerRow(1)
       .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -400,21 +402,128 @@ void setup () {
       .activateEvent(true)
       .setColorActive(activeBut)
       .setColorBackground(color(unactiveBut))
-      .addItem("lessThanOneTech",1)
-      .addItem("oneTech",2)
-      .addItem("twoTech",3)
-      .addItem("threeTech",4)
-      .addItem("fourTech",5)
-      .addItem("moreThanFourTech",1)
-      .setFont(font)
-     
+      .addItem("zeroTechStorm",1)
+      .addItem("oneTechStorm",2)
+      .addItem("twoTechStorm",3)
+      .addItem("threeTechStorm",4)
+      .addItem("greaterThreeTechStorm",5)
+      .getCaptionLabel()
+      .setFont(font);
       ;
-      cp5.getController("lessThanOneTech").setLabel("<1");
-      cp5.getController("oneTech").setLabel("1");
-      cp5.getController("twoTech").setLabel("2");
-      cp5.getController("threeTech").setLabel("3");
-      cp5.getController("fourTech").setLabel("4");
-       cp5.getController("moreThanFourTech").setLabel(">4");
+      
+      cp5.getGroup("techFoulStorm");
+      cp5.getController("zeroTechStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("zeroTechStorm").setLabel("0");
+      cp5.getController("oneTechStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("oneTechStorm").setLabel("1");
+      cp5.getController("twoTechStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("twoTechStorm").setLabel("2");
+      cp5.getController("threeTechStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("threeTechStorm").setLabel("3");
+      cp5.getController("greaterThreeTechStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("greaterThreeTechStorm").setLabel(">3");
+
+      
+      
+      
+        //Tele Tech Fouls
+      cp5.addRadioButton("techFoulTele")
+      .setPosition(xLocation, yLocation*4.7)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(1)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("zeroTechTele",1)
+      .addItem("oneTechTele",2)
+      .addItem("twoTechTele",3)
+      .addItem("threeTechTele",4)
+      .addItem("greaterThreeTechTele",5)
+      .setFont(font)
+      ;
+      cp5.getGroup("techFoulTele");
+      cp5.getController("zeroTechTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("zeroTechTele").setLabel("0");
+      cp5.getController("oneTechTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("oneTechTele").setLabel("1");
+      cp5.getController("twoTechTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("twoTechTele").setLabel("2");
+      cp5.getController("threeTechTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("threeTechTele").setLabel("3");
+      cp5.getController("greaterThreeTechTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("greaterThreeTechTele").setLabel(">3");
+
+       
+       
+       
+       
+       //Storm fouls
+     cp5.addRadioButton("foulStorm")
+      .setPosition(xLocation*4, yLocation*4.7)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(1)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("zeroFoulStorm",1)
+      .addItem("oneFoulStorm",2)
+      .addItem("twoFoulStorm",3)
+      .addItem("threeFoulStorm",4)
+      .addItem("fourFoulStorm",5)
+      .addItem("moreThanFourFoulStorm",1)
+      .setFont(font)
+      ;
+      cp5.getGroup("foulStorm");
+      cp5.getController("zeroFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("zeroFoulStorm").setLabel("0");
+      cp5.getController("oneFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("oneFoulStorm").setLabel("1");
+      cp5.getController("twoFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("twoFoulStorm").setLabel("2");
+      cp5.getController("threeFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("threeFoulStorm").setLabel("3");
+      cp5.getController("fourFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("fourFoulStorm").setLabel("4");
+      cp5.getController("moreThanFourFoulStorm").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("moreThanFourFoulStorm").setLabel(">4");
+      
+      
+      
+      
+      cp5.addRadioButton("foulTele")
+      .setPosition(xLocation*4, yLocation*4.7)
+      .setSize(sizeingPt2, sizeingPt2)
+      .setItemsPerRow(1)
+      .setSpacingColumn(xSpacing/5+(xSpacing/10))
+      .setSpacingRow(ySpacing)
+      .activateEvent(true)
+      .setColorActive(activeBut)
+      .setColorBackground(color(unactiveBut))
+      .addItem("zeroFoulTele",1)
+      .addItem("oneFoulTele",2)
+      .addItem("twoFoulTele",3)
+      .addItem("threeFoulTele",4)
+      .addItem("fourFoulTele",5)
+      .addItem("moreThanFourFoulTele",1)
+      .setFont(font)
+      ;
+            cp5.getGroup("foulTele");
+      cp5.getController("zeroFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("zeroFoulTele").setLabel("0");
+      cp5.getController("oneFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("oneFoulTele").setLabel("1");
+      cp5.getController("twoFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("twoFoulTele").setLabel("2");
+      cp5.getController("threeFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("threeFoulTele").setLabel("3");
+      cp5.getController("fourFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("fourFoulTele").setLabel("4");
+      cp5.getController("moreThanFourFoulTele").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+      cp5.getController("moreThanFourFoulTele").setLabel(">4");
       //cp5.getGroup("stormCargoHigh").setValue(1);
       //cp5.getGroup("stormCargoMid").setValue(2);
       //cp5.getGroup("rocketStormCargoLow").setValue(3);
@@ -477,35 +586,42 @@ void setup () {
       .setBroadcast(true)
       ;
    */
-   myTextfield = cp5.addTextfield("textinput").setColorValue(color(textCl))
+   cp5.addTextfield("didWellInput")
+      .setColorValue(color(white))
       .setPosition(xLocation, yLocation*2)
-      .setSize(sizeing*2, sizeingPt2)
-      .setFocus(true)
+      .setSize(sizeing*11, sizeingPt2)
+      .setFocus(true) 
+      .setFont(font)
+      .setLabel("What they did well")
       ;
 
-   cp5.addTextfield("textValue").setColorValue(color(textCl))
+   cp5.addTextfield("struggledInput")
+      .setColorValue(color(white))
       .setPosition(xLocation, yLocation*3)
-      .setSize(sizeing*2, sizeingPt2)
+      .setSize(sizeing*11, sizeingPt2)
+      .setFont(font)
+      .setLabel("What they struggled with")
       ;
-   myTextfield.setAutoClear(true).keepFocus(true);
-
-   cp5.addButton("clear", 0, 20, 200, 70, 20);
-      cp5.addButton("submit", 0, 310, 200, 60, 20);
-      cp5.addButton("performTextfieldActions", 0, 20, 100, 150, 20);
-      cp5.addToggle("toggleAutoClear", true, 180, 100, 90, 20).setCaptionLabel("Auto Clear").setColorValue(color(textCl));
-      cp5.addToggle("toggleKeepFocus", true, 280, 100, 90, 20).setCaptionLabel("Keep Focus").setColorValue(color(textCl));
-
+      
+   cp5.addTextfield("cantInput")
+      .setColorValue(color(white))
+      .setPosition(xLocation, yLocation*4)
+      .setSize(sizeing*11, sizeingPt2)
+      .setFont(font)
+      .setLabel("What they can't do")
+      ;
+   
+   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
+      
+      
    //cp5.getController("sliderValue").moveTo("sneeze");
    //cp5.getController("slider").moveTo("sneeze");
    //cp5.getController("button").moveTo("sneeze");
    //cp5.getController("buttonValue").moveTo("sneeze");
-   cp5.getController("textinput").moveTo("postGame");
-   cp5.getController("textValue").moveTo("postGame");
-   cp5.getController("clear").moveTo("postGame");
+   cp5.getController("didWellInput").moveTo("postGame");
+   cp5.getController("struggledInput").moveTo("postGame");
+   cp5.getController("cantInput").moveTo("postGame");
    cp5.getController("submit").moveTo("postGame");
-   cp5.getController("performTextfieldActions").moveTo("postGame");
-   cp5.getController("toggleAutoClear").moveTo("postGame");
-   cp5.getController("toggleKeepFocus").moveTo("postGame");
    /*cp5.getController("1").moveTo("sandstorm");
    cp5.getController("2").moveTo("sandstorm");
    cp5.getController("3").moveTo("sandstorm");
@@ -519,13 +635,18 @@ void setup () {
    cp5.getGroup("rocket2HatchSand").moveTo("sandstorm");
    cp5.getGroup("shipCargoSand").moveTo("sandstorm");
    cp5.getGroup("shipHatchSand").moveTo("sandstorm");
+   cp5.getGroup("techFoulStorm").moveTo("sandstorm");
+   cp5.getGroup("foulStorm").moveTo("sandstorm");
    cp5.getGroup("rocket1CargoTele").moveTo("teleop");
    cp5.getGroup("rocket1HatchTele").moveTo("teleop");
    cp5.getGroup("rocket2CargoTele").moveTo("teleop");
    cp5.getGroup("rocket2HatchTele").moveTo("teleop");
    cp5.getGroup("shipCargoTele").moveTo("teleop");
    cp5.getGroup("shipHatchTele").moveTo("teleop");
+   cp5.getGroup("techFoulTele").moveTo("teleop");
+   cp5.getGroup("foulTele").moveTo("teleop");
    cp5.getController("toggleDarkMode").moveTo("settings");
+   
 }
 
 
@@ -537,13 +658,41 @@ void draw (){
    
    //UI Elements
    if(activeTab == 1 || activeTab==2){ //If on Sandstorm or Teleop tabs
-     line(0,(height/2),width,(height/2)); //Draw horisontal line
+     line(0,(yLocation*3.7),width,(yLocation*3.7)); //Draw horisontal line
      textSize(fontSize);
-     text("Left Rocket",xLocation*1.05,yLocation*1.8);
-     text("Right Rocket",xLocation*3.46,yLocation*1.8);
-     text("Ship Hatches",xLocation*6.96,yLocation*1.8);
-     text("Ship Cargo",xLocation*10.1,yLocation*1.8);
-   }
+     
+       //Rocket Text
+     textSize(fontSize + 5);
+     text("Rockets",xLocation*2.5,yLocation*1);
+     textSize(fontSize);
+     text("Left",xLocation*1.6,yLocation*1.8);
+     text("Right",xLocation*4.05,yLocation*1.8);
+     textSize(fontSize - 3);
+     text("Cargo",xLocation*1.5,yLocation*3.3);
+     text("Cargo",xLocation*4.05,yLocation*3.3);
+     textSize(fontSize);
+     
+       //Cargo ship text
+     textSize(fontSize + 5);
+     text("Cargo Ship",xLocation*8.6, yLocation*1);
+     textSize(fontSize);
+     text("Hatches",xLocation*7.42, yLocation*1.8);
+     text("Cargo",xLocation*10.52,yLocation*1.8);
+     
+       //Fouls text
+     text("Tech Fouls",xLocation*.7, yLocation*4.3);
+     text("Fouls",xLocation*3.9,yLocation*4.3);
+     
+     cp5.getGroup("techFoulTele").setColorLabel(color(textCl));
+     cp5.getGroup("techFoulStorm").setColorLabel(color(textCl));
+     cp5.getGroup("foulTele").setColorLabel(color(textCl));
+     cp5.getGroup("foulStorm").setColorLabel(color(textCl));
+  }
+  if(activeTab==3){
+    cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
+     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
+     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
+  }
 }
 
    abstract class A implements ControlListener{
@@ -559,9 +708,9 @@ void draw (){
       }
    }
 
-void toggleAutoClear(boolean theFlag) {
+/*void toggleAutoClear(boolean theFlag) {
   myTextfield.setAutoClear(theFlag);
-}
+}*/
 
 void toggleDarkMode(boolean darkMode){
   if(darkMode == true){
@@ -574,45 +723,31 @@ void toggleDarkMode(boolean darkMode){
   }
 }
 
-void toggleKeepFocus(boolean theFlag) {
-  myTextfield.keepFocus(theFlag);
-}
-
-void clear(int theValue) {
-  myTextfield.clear();
-}
 
 void submit(int theValue) {
+  
   myTextfield.submit();
 }
 
 class B extends A {}
 
 void controlEvent(ControlEvent theEvent) {
+  
   if (theEvent.isAssignableFrom(Textfield.class)) {
-    Textfield t = (Textfield)theEvent.getController();
-
-    println("controlEvent: accessing a string from controller '"
-      +t.getName()+"': "+t.getStringValue()
-      );
-
-    // Textfield.isAutoClear() must be true
-    print("controlEvent: trying to setText, ");
-
-    t.setText("controlEvent: changing text.");
-    if (t.isAutoClear()==false) {
-      println("success!");
-    } 
-    else {
-      println(" but Textfield.isAutoClear() is false, could not setText here.");
-    }
+    cp5.get("didWellInput").getStringValue();
+    println(cp5.get("didWellInput").getStringValue());
   }
    if (theEvent.isTab()){
       println("got an event from tab : "+theEvent.getTab().getName()+" with id "+theEvent.getTab().getId());
    }
+   
+   if (theEvent.isAssignableFrom(CheckBox.class)) {
+       
+   }
 }
 
 
+/*
 void performTextfieldActions() {
   println("\n");
   // Textfield.getText();
@@ -628,6 +763,7 @@ void performTextfieldActions() {
   }
   println("\n");
 }
+*/
 
 public void textinput(String theText) {
   // receiving text from controller textinput
