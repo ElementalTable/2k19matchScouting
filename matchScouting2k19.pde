@@ -726,7 +726,7 @@ void toggleDarkMode(boolean darkMode){
 
 void submit(int theValue) {
   
-  myTextfield.submit();
+  cp5.getController("didWellInput").getStringValue();
 }
 
 class B extends A {}
