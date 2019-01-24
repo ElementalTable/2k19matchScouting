@@ -701,6 +701,33 @@ void draw () {
   }
 }
 
+//read variables
+int teamId;
+String alliace;
+int startPos;
+int stormRocketHatchLow;
+int stormCargoHatchLow;
+int stormHatchMid;
+int stormHatchHigh;
+int stormRocketCargoLow;
+int stormCargoCargoLow;
+int stormCargoMid;
+int stormCargoHigh;
+int stormTechFouls;
+int stormFouls;
+int hatchRocketLow;
+int hatchCargoLow;
+int hatchMid;
+int hatchHigh;
+int cargoRocketLow;
+int cargoCargoLow;
+int cargoMid;
+int techFouls;
+int fouls;
+int cargoHigh;
+int endPos;
+
+
 abstract class A implements ControlListener {
   void rocketCargo(float theValue) {
     println(theValue);
