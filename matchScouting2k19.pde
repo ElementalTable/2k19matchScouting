@@ -41,11 +41,11 @@ ControlP5 cp5;
    
 //Active Tab Var
    int activeTab;
-
+   int matchNum = 1;
 String textValue = "";
-   Textfield myTextfield;
-   CheckBox helloBox;
-
+Textfield cantText;
+Textfield struggledText;
+Textfield didWellText;
 void setup () {
    B b = new B();
    fullScreen();
@@ -586,32 +586,32 @@ void setup () {
       .setBroadcast(true)
       ;
    */
-   cp5.addTextfield("didWellInput")
+   didWellText = cp5.addTextfield("didWellInput")
       .setColorValue(color(white))
-      .setPosition(xLocation, yLocation*2)
+      .setPosition(xLocation, yLocation*3)
       .setSize(sizeing*11, sizeingPt2)
       .setFocus(true) 
       .setFont(font)
       .setLabel("What they did well")
       ;
 
-   cp5.addTextfield("struggledInput")
+   struggledText = cp5.addTextfield("struggledInput")
       .setColorValue(color(white))
-      .setPosition(xLocation, yLocation*3)
+      .setPosition(xLocation, yLocation*4.5)
       .setSize(sizeing*11, sizeingPt2)
       .setFont(font)
       .setLabel("What they struggled with")
       ;
       
-   cp5.addTextfield("cantInput")
+   cantText = cp5.addTextfield("cantInput")
       .setColorValue(color(white))
-      .setPosition(xLocation, yLocation*4)
+      .setPosition(xLocation, yLocation*6)
       .setSize(sizeing*11, sizeingPt2)
       .setFont(font)
       .setLabel("What they can't do")
       ;
    
-   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
+   //cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
       
       
    //cp5.getController("sliderValue").moveTo("sneeze");
@@ -621,7 +621,7 @@ void setup () {
    cp5.getController("didWellInput").moveTo("postGame");
    cp5.getController("struggledInput").moveTo("postGame");
    cp5.getController("cantInput").moveTo("postGame");
-   cp5.getController("submit").moveTo("postGame");
+   //cp5.getController("submit").moveTo("postGame");
    /*cp5.getController("1").moveTo("sandstorm");
    cp5.getController("2").moveTo("sandstorm");
    cp5.getController("3").moveTo("sandstorm");
@@ -689,10 +689,10 @@ void draw (){
      cp5.getGroup("foulStorm").setColorLabel(color(textCl));
   }
   if(activeTab==3){
-    cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
+     cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
      cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
      cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
-  }
+   }
 }
 
    abstract class A implements ControlListener{
@@ -723,10 +723,9 @@ void toggleDarkMode(boolean darkMode){
   }
 }
 
-
 void submit(int theValue) {
   
-  cp5.getController("didWellInput").getStringValue();
+  didWellText.submit();
 }
 
 class B extends A {}
