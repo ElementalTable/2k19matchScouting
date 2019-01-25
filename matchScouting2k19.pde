@@ -701,36 +701,10 @@ void draw () {
   }
 }
 
-//read variables
-int teamId;
-String alliace;
-int startPos;
-int stormRocketHatchLow;
-int stormCargoHatchLow;
-int stormHatchMid;
-int stormHatchHigh;
-int stormRocketCargoLow;
-int stormCargoCargoLow;
-int stormCargoMid;
-int stormCargoHigh;
-int stormTechFouls;
-int stormFouls;
-int hatchRocketLow;
-int hatchCargoLow;
-int hatchMid;
-int hatchHigh;
-int cargoRocketLow;
-int cargoCargoLow;
-int cargoMid;
-int techFouls;
-int fouls;
-int cargoHigh;
-int endPos;
-
 
 abstract class A implements ControlListener {
   void rocketCargo(float theValue) {
-    println(theValue);
+    //println(theValue);
   }
   public void controlEvent(ControlEvent theEvent) {
     rocketCargo(theEvent.value());
@@ -762,6 +736,33 @@ void submit(int theValue) {
   cantText.submit();
 }
 
+
+//read variables
+int teamId;
+String alliace;
+int startPos;
+int stormRocketHatchLow;//
+int stormCargoHatchLow;//
+int stormHatchMid;//
+int stormHatchHigh;//
+int stormCargoRocketLow;//
+int stormCargoCargoLow;//
+int stormCargoMid;//
+int stormCargoHigh;//
+int stormTechFouls;
+int stormFouls;
+int hatchRocketLow;//
+int hatchCargoLow;//
+int hatchMid;//
+int hatchHigh;//
+int cargoRocketLow;//
+int cargoCargoLow;//
+int cargoMid;//
+int cargoHigh;//
+int techFouls;
+int fouls;
+int endPos;
+
 class B extends A {
 }
 
@@ -769,13 +770,118 @@ void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isAssignableFrom(Textfield.class)) {
     cp5.get("didWellInput").getStringValue();
-    println(cp5.get("didWellInput").getStringValue());
+    //println(cp5.get("didWellInput").getStringValue());
   }
   if (theEvent.isTab()) {
-    println("got an event from tab : "+theEvent.getTab().getName()+" with id "+theEvent.getTab().getId());
+    //println("got an event from tab : "+theEvent.getTab().getName()+" with id "+theEvent.getTab().getId());
   }
 
   if (theEvent.isAssignableFrom(CheckBox.class)) {
+
+    
+    
+    
+    
+    
+    
+    stormRocketHatchLow = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(5)
+      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(5)
+      ;
+    stormCargoHatchLow =
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(0) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(1) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(2) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(3) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(4) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(5) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(6) + 
+      (int)cp5.getGroup("shipHatchSand").getArrayValue(7)
+      ;
+
+    stormHatchMid = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(3)
+      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(3)
+      ;
+
+    stormHatchHigh = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(1)
+      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(1)
+      ;
+
+
+
+    stormCargoRocketLow = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(5)
+      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(5)
+      ;
+    stormCargoCargoLow =
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(0) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(1) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(2) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(3) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(4) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(5) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(6) + 
+      (int)cp5.getGroup("shipCargoSand").getArrayValue(7)
+      ;
+
+    stormCargoMid = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(3)
+      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(3)
+      ;
+
+    stormCargoHigh = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(1)
+      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(1)
+      ;
+
+
+    hatchRocketLow = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(5)
+      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(5)
+      ;
+    hatchCargoLow =
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(0) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(1) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(2) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(3) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(4) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(5) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(6) + 
+      (int)cp5.getGroup("shipHatchTele").getArrayValue(7)
+      ;
+
+    hatchMid = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(3)
+      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(3)
+      ;
+
+    hatchHigh = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(1)
+      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(1)
+      ;
+
+
+
+    cargoRocketLow = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(5)
+      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(5)
+      ;
+    cargoCargoLow =
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(0) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(1) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(2) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(3) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(4) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(5) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(6) + 
+      (int)cp5.getGroup("shipCargoTele").getArrayValue(7)
+      ;
+
+    cargoMid = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(3)
+      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(3)
+      ;
+
+    cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
+      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
+      ;
+
+
+
+
+    println(hatchMid);
+    // if(theEvent.getName() ==
   }
 }
 
@@ -800,7 +906,7 @@ void performTextfieldActions() {
 
 public void textinput(String theText) {
   // receiving text from controller textinput
-  println("a textfield event for controller 'textinput': "+theText);
+  //println("a textfield event for controller 'textinput': "+theText);
 }
 
 /*void loadJSON(int MATCH) {
