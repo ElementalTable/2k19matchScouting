@@ -665,6 +665,7 @@ void draw () {
   }
 }
 
+<<<<<<< HEAD
 
 
 //read variables
@@ -693,10 +694,11 @@ int fouls;
 int cargoHigh;
 int endPos;
 
+=======
+>>>>>>> 570d3669f231fae3c1d2f292ef5dc195d0e91348
 
 abstract class A implements ControlListener {
   void rocketCargo(float theValue) {
-    println(theValue);
   }
   public void controlEvent(ControlEvent theEvent) {
     rocketCargo(theEvent.value());
@@ -735,13 +737,12 @@ void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isAssignableFrom(Textfield.class)) {
     cp5.get("didWellInput").getStringValue();
-    println(cp5.get("didWellInput").getStringValue());
   }
   if (theEvent.isTab()) {
-    println("got an event from tab : "+theEvent.getTab().getName()+" with id "+theEvent.getTab().getId());
   }
 
   if (theEvent.isAssignableFrom(CheckBox.class)) {
+<<<<<<< HEAD
     cp5.get("rocket2CargoSand");
   }
 }
@@ -767,7 +768,6 @@ void performTextfieldActions() {
 
 public void textinput(String theText) {
   // receiving text from controller textinput
-  println("a textfield event for controller 'textinput': "+theText);
 }
 
 /*void loadJSON(int MATCH) {
