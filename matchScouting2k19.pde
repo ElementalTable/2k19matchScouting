@@ -499,7 +499,7 @@ void setup () {
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
-    .setColorActive(color(225,225,10))
+    .setColorActive(color(225, 225, 10))
     .setColorBackground(unactiveBut)
     ;
 
@@ -515,7 +515,7 @@ void setup () {
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
-    .setColorActive(color(255,10,10))
+    .setColorActive(color(255, 10, 10))
     .setColorBackground(unactiveBut)
     ;
 
@@ -523,11 +523,11 @@ void setup () {
   cp5.getController("redCard").setLabel("Red Card");
   redCard.getCaptionLabel().getStyle().marginLeft = 85;
   redCard.getCaptionLabel().getStyle().marginTop = -27;
-  
-  
-  
-  
-  
+
+
+
+
+
   Toggle disabled = cp5.addToggle("disabled")
     .setPosition(xLocation*8, yLocation*5.7)
     .setSize(70, 20)
@@ -541,12 +541,12 @@ void setup () {
   cp5.getController("disabled").setLabel("Disabled");
   disabled.getCaptionLabel().getStyle().marginLeft = 85;
   disabled.getCaptionLabel().getStyle().marginTop = -27;
-  
 
-  
-  
-  
-    Toggle flippedOver = cp5.addToggle("flippedOver")
+
+
+
+
+  Toggle flippedOver = cp5.addToggle("flippedOver")
     .setPosition(xLocation*8, yLocation*6.2)
     .setSize(70, 20)
     .setValue(false)
@@ -602,21 +602,21 @@ void setup () {
     .setFont(font)
     .setLabel("What they can't do")
     ;
-    
-    //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
-cp5.addBang("addMatch" ,(xLocation*7+13), (yLocation*6), 40,40)
+
+  //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
+  cp5.addBang("addMatch", (xLocation*7+13), (yLocation*6), 40, 40)
     .setFont(font)
     ;
-    
-    cp5.getController("addMatch").setLabel("+");
-    cp5.getController("addMatch").getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER).setColor(textCl).setFont(largeFont);
-    
-    cp5.addBang("subtractMatch" ,(xLocation*6+13), (yLocation*6), 40,40)
+
+  cp5.getController("addMatch").setLabel("+");
+  cp5.getController("addMatch").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER).setColor(textCl).setFont(largeFont);
+
+  cp5.addBang("subtractMatch", (xLocation*6+13), (yLocation*6), 40, 40)
     .setFont(font)
     ;
-    
-    cp5.getController("subtractMatch").setLabel("-");
-    cp5.getController("subtractMatch").getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER).setColor(textCl).setFont(largeFont);
+
+  cp5.getController("subtractMatch").setLabel("-");
+  cp5.getController("subtractMatch").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER).setColor(textCl).setFont(largeFont);
   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
 
 
@@ -639,7 +639,7 @@ cp5.addBang("addMatch" ,(xLocation*7+13), (yLocation*6), 40,40)
     .getCaptionLabel()
     .setFont(font);
   ;
-  
+
   cp5.getGroup("techFoul");
   cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("one").setLabel("1");
@@ -653,14 +653,14 @@ cp5.addBang("addMatch" ,(xLocation*7+13), (yLocation*6), 40,40)
   cp5.getController("five").setLabel("5");
   cp5.getController("six").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("six").setLabel("6");
-  
-  
-  
-  
+
+
+
+
   //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
-  
-  
-  
+
+
+
   //cp5.getController("sliderValue").moveTo("sneeze");
   //cp5.getController("slider").moveTo("sneeze");
   //cp5.getController("button").moveTo("sneeze");
@@ -707,15 +707,15 @@ void draw () {
   //  test.setProgress((test.getProgress() + 0.01) % 1);
 
   //UI Elements
-  if(activeTab == 0){
+  if (activeTab == 0) {
     cp5.getGroup("scoutNum").setColorLabel(color(textCl));
     textAlign(CENTER);
     textSize(fontSize+20);
-    text(matchNum,xLocation*6.82,yLocation*6.35);
-    text(teamId,xLocation*6.82,yLocation*1.2);
+    text(matchNum, xLocation*6.82, yLocation*6.35);
+    text(teamId, xLocation*6.82, yLocation*1.2);
     textSize(fontSize);
-    text("Team Number",xLocation*6.82,yLocation*1.7);
-    text("Match Number",xLocation*6.82,yLocation*6.8);
+    text("Team Number", xLocation*6.82, yLocation*1.7);
+    text("Match Number", xLocation*6.82, yLocation*6.8);
     text("Scout Number", xLocation*1.2, yLocation*3.2);
     textAlign(LEFT);
   }
@@ -777,7 +777,7 @@ abstract class A implements ControlListener {
         cp5.getController("redCard").moveTo("sandstorm");
         cp5.getController("flippedOver").moveTo("sandstorm");
       }
-      
+
       if (activeTab == 2) {
         cp5.getGroup("techFoul").moveTo("teleop");
         cp5.getGroup("foul").moveTo("teleop");
@@ -811,13 +811,13 @@ void submit() {
   matchNum++;
 }
 
-void addMatch(){
+void addMatch() {
   matchNum++;
 }
 
-void subtractMatch(){
-  if(matchNum>1){
-  matchNum--;
+void subtractMatch() {
+  if (matchNum>1) {
+    matchNum--;
   }
 }
 
@@ -954,7 +954,72 @@ void controlEvent(ControlEvent theEvent) {
     cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
       + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
       ;
+
+
   }
+
+    //-----------------------------------------------------------------Penalties, Fouls, ETC--------------------------------------------------------------------
+    if (theEvent.isFrom("techFoul")) {
+      if(theEvent.getArrayValue(0) == 1){
+        techFouls = 0;
+      }
+      else if(theEvent.getArrayValue(1) == 1){
+        techFouls = 1;
+      }
+      else if(theEvent.getArrayValue(2) == 1){
+        techFouls = 2;
+      }
+      else if(theEvent.getArrayValue(3) == 1){
+        techFouls = 3;
+      }
+      else if(theEvent.getArrayValue(4) == 1){
+        techFouls = 4;
+      }
+    }
+    
+    if (theEvent.isFrom("foul")) {
+      if(theEvent.getArrayValue(0) == 1){
+        techFouls = 0;
+      }
+      else if(theEvent.getArrayValue(1) == 1){
+        techFouls = 1;
+      }
+      else if(theEvent.getArrayValue(2) == 1){
+        techFouls = 2;
+      }
+      else if(theEvent.getArrayValue(3) == 1){
+        techFouls = 3;
+      }
+      else if(theEvent.getArrayValue(4) == 1){
+        techFouls = 4;
+      }
+      else if(theEvent.getArrayValue(5) == 1){
+        techFouls = 5;
+      }
+    }
+    
+    
+    
+    if (theEvent.isFrom("scoutNum")) {
+      if(theEvent.getArrayValue(0) == 1){
+        techFouls = 1;
+      }
+      else if(theEvent.getArrayValue(1) == 1){
+        techFouls = 2;
+      }
+      else if(theEvent.getArrayValue(2) == 1){
+        techFouls = 3;
+      }
+      else if(theEvent.getArrayValue(3) == 1){
+        techFouls = 4;
+      }
+      else if(theEvent.getArrayValue(4) == 1){
+        techFouls = 5;
+      }
+      else if(theEvent.getArrayValue(5) == 1){
+        techFouls = 6;
+      }
+    }
 }
 
 
