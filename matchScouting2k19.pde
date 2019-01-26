@@ -471,7 +471,7 @@ void setup () {
 
 
 
- 
+
   //cp5.getGroup("stormCargoHigh").setValue(1);
   //cp5.getGroup("stormCargoMid").setValue(2);
   //cp5.getGroup("rocketStormCargoLow").setValue(3);
@@ -491,40 +491,75 @@ void setup () {
   //c.add(d1);
   //c.setLookAndFeel(look);
 
-//-----------------------------------------------------------------------------------Penalty Switches-------------------------------------------------------------------
+  //-----------------------------------------------------------------------------------Penalty Switches-------------------------------------------------------------------
   Toggle yellowCard = cp5.addToggle("yellowCard")
-     .setPosition(xLocation*8,yLocation*5)
-     .setSize(70,20)
-     .setValue(false)
-     .setFont(font)
-     .setColorActive(unactiveBut)
-     .setColorBackground(activeBut)
-     .setMode(ControlP5.SWITCH)
-     ;
-     
+    .setPosition(xLocation*8, yLocation*4.7)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(color(225,225,10))
+    .setColorBackground(unactiveBut)
+    ;
+
   cp5.getController("yellowCard").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("yellowCard").setLabel("Yellow Card");
   yellowCard.getCaptionLabel().getStyle().marginLeft = 85;
   yellowCard.getCaptionLabel().getStyle().marginTop = -27;
-  
-  
-  
+
+
+
   Toggle redCard = cp5.addToggle("redCard")
-     .setPosition(xLocation*8,yLocation*5.5)
-     .setSize(70,20)
-     .setValue(false)
-     .setFont(font)
-     .setColorActive(unactiveBut)
-     .setColorBackground(activeBut)
-     .setMode(ControlP5.SWITCH)
-     ;
-     
+    .setPosition(xLocation*8, yLocation*5.2)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(color(255,10,10))
+    .setColorBackground(unactiveBut)
+    ;
+
   cp5.getController("redCard").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("redCard").setLabel("Red Card");
   redCard.getCaptionLabel().getStyle().marginLeft = 85;
   redCard.getCaptionLabel().getStyle().marginTop = -27;
+  
+  
+  
+  
+  
+  Toggle disabled = cp5.addToggle("disabled")
+    .setPosition(xLocation*8, yLocation*5.7)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(activeBut)
+    .setColorBackground(unactiveBut)
+    ;
 
-//----------------------------------------------------------------------------------Dark Mode----------------------------------------------------------------------------
+  cp5.getController("disabled").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("disabled").setLabel("Disabled");
+  disabled.getCaptionLabel().getStyle().marginLeft = 85;
+  disabled.getCaptionLabel().getStyle().marginTop = -27;
+  
+
+  
+  
+  
+    Toggle flippedOver = cp5.addToggle("flippedOver")
+    .setPosition(xLocation*8, yLocation*6.2)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(activeBut)
+    .setColorBackground(unactiveBut)
+    ;
+
+  cp5.getController("flippedOver").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("flippedOver").setLabel("Flipped Over");
+  flippedOver.getCaptionLabel().getStyle().marginLeft = 85;
+  flippedOver.getCaptionLabel().getStyle().marginTop = -27;
+
+
+  //----------------------------------------------------------------------------------Dark Mode----------------------------------------------------------------------------
   cp5.addToggle("toggleDarkMode", false)
     .setLabel("Dark Mode")
     .setColorActive(color(activeBut))
@@ -540,7 +575,7 @@ void setup () {
     ;
 
 
-//-------------------------------------------------------------------------Post Game Text Fields------------------------------------------------------------------------
+  //-------------------------------------------------------------------------Post Game Text Fields------------------------------------------------------------------------
   didWellText = cp5.addTextfield("didWellInput")
     .setColorValue(color(white))
     .setPosition(xLocation, yLocation*3)
@@ -592,15 +627,17 @@ void setup () {
   cp5.getGroup("techFoul").moveTo("sandstorm");
   cp5.getGroup("foul").moveTo("sandstorm");
   cp5.getController("yellowCard").moveTo("sandstorm");
+  cp5.getController("disabled").moveTo("sandstorm");
   cp5.getController("redCard").moveTo("sandstorm");
-  
+  cp5.getController("flippedOver").moveTo("sandstorm");
+
   cp5.getGroup("rocket1CargoTele").moveTo("teleop");
   cp5.getGroup("rocket1HatchTele").moveTo("teleop");
   cp5.getGroup("rocket2CargoTele").moveTo("teleop");
   cp5.getGroup("rocket2HatchTele").moveTo("teleop");
   cp5.getGroup("shipCargoTele").moveTo("teleop");
   cp5.getGroup("shipHatchTele").moveTo("teleop");
-  
+
   cp5.getController("toggleDarkMode").moveTo("settings");
 }
 
@@ -642,22 +679,11 @@ void draw () {
     cp5.getGroup("foul").setColorLabel(color(textCl));
     cp5.getController("yellowCard").getCaptionLabel().setColor(color(textCl));
     cp5.getController("redCard").getCaptionLabel().setColor(color(textCl));
+    cp5.getController("disabled").getCaptionLabel().setColor(color(textCl));
+    cp5.getController("flippedOver").getCaptionLabel().setColor(color(textCl));
   }
 
-  if (activeTab == 1){
-    cp5.getGroup("techFoul").moveTo("sandstorm");
-    cp5.getGroup("foul").moveTo("sandstorm");
-    
-    cp5.getController("yellowCard").moveTo("sandstorm");
-    cp5.getController("redCard").moveTo("sandstorm");
-  }
-  if (activeTab == 2){
-    cp5.getGroup("techFoul").moveTo("teleop");
-    cp5.getGroup("foul").moveTo("teleop");
-    
-    cp5.getController("yellowCard").moveTo("teleop");
-    cp5.getController("redCard").moveTo("teleop");
-  }
+
   if (activeTab==3) {
     cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
@@ -671,10 +697,25 @@ abstract class A implements ControlListener {
     //println(theValue);
   }
   public void controlEvent(ControlEvent theEvent) {
-    rocketCargo(theEvent.value());
-
     if (theEvent.isTab()) {
       activeTab = theEvent.getTab().getId();
+      if (activeTab == 1) {
+        cp5.getGroup("techFoul").moveTo("sandstorm");
+        cp5.getGroup("foul").moveTo("sandstorm");
+        cp5.getController("disabled").moveTo("sandstorm");
+        cp5.getController("yellowCard").moveTo("sandstorm");
+        cp5.getController("redCard").moveTo("sandstorm");
+        cp5.getController("flippedOver").moveTo("sandstorm");
+      }
+      
+      if (activeTab == 2) {
+        cp5.getGroup("techFoul").moveTo("teleop");
+        cp5.getGroup("foul").moveTo("teleop");
+        cp5.getController("disabled").moveTo("teleop");
+        cp5.getController("yellowCard").moveTo("teleop");
+        cp5.getController("redCard").moveTo("teleop");
+        cp5.getController("flippedOver").moveTo("teleop");
+      }
     }
   }
 }
@@ -834,7 +875,6 @@ void controlEvent(ControlEvent theEvent) {
     cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
       + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
       ;
-
   }
 }
 
