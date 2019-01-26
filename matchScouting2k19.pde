@@ -602,6 +602,31 @@ void setup () {
     .setFont(font)
     .setLabel("What they can't do")
     ;
+    
+    
+cp5.addRadioButton("endPos")
+    .setPosition(xLocation*11.8, yLocation)
+    .setSize(sizeingPt2, sizeingPt2)
+    .setItemsPerRow(1)
+    .setSpacingColumn(xSpacing/5+(xSpacing/10))
+    .setSpacingRow(ySpacing)
+    .activateEvent(true)
+    .setColorActive(activeBut)
+    .setColorBackground(color(unactiveBut))
+    .addItem("habOneE", 1)
+    .addItem("habTwoE", 2)
+    .addItem("habThreeE", 3)
+    .getCaptionLabel()
+    .setFont(font);
+  ;
+
+  cp5.getGroup("endPos");
+  cp5.getController("habOneE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habOneE").setLabel("1");
+  cp5.getController("habTwoE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habTwoE").setLabel("2");
+  cp5.getController("habThreeE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habThreeE").setLabel("3");
 
   //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
   cp5.addBang("addMatch", (xLocation*7+13), (yLocation*6), 40, 40)
@@ -622,7 +647,7 @@ void setup () {
 
 
   cp5.addRadioButton("scoutNum")
-    .setPosition(xLocation, yLocation*3.5)
+    .setPosition(xLocation, yLocation*3)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -640,7 +665,10 @@ void setup () {
     .setFont(font);
   ;
 
-  cp5.getGroup("techFoul");
+
+
+
+  cp5.getGroup("scoutNum");
   cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("one").setLabel("1");
   cp5.getController("two").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
@@ -656,6 +684,28 @@ void setup () {
 
 
 
+  cp5.addRadioButton("startPos")
+    .setPosition(xLocation*11.5, yLocation*3.7)
+    .setSize(sizeingPt2, sizeingPt2)
+    .setItemsPerRow(2)
+    .setSpacingColumn(xSpacing+(xSpacing/10))
+    .setSpacingRow(ySpacing)
+    .activateEvent(true)
+    .setColorActive(activeBut)
+    .setColorBackground(color(unactiveBut))
+    .addItem("habOne", 1)
+    .addItem("habTwo", 2)
+    .getCaptionLabel()
+    .setFont(font);
+  ;
+
+  cp5.getGroup("starPos");
+  cp5.getController("habOne").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habOne").setLabel("1");
+  cp5.getController("habTwo").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habTwo").setLabel("2");
+
+
 
   //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
 
@@ -665,10 +715,12 @@ void setup () {
   //cp5.getController("slider").moveTo("sneeze");
   //cp5.getController("button").moveTo("sneeze");
   //cp5.getController("buttonValue").moveTo("sneeze");
+  cp5.getGroup("endPos").moveTo("postGame");
   cp5.getController("didWellInput").moveTo("postGame");
   cp5.getController("struggledInput").moveTo("postGame");
   cp5.getController("cantInput").moveTo("postGame");
   cp5.getController("submit").moveTo("postGame");
+  
   /*cp5.getController("1").moveTo("sandstorm");
    cp5.getController("2").moveTo("sandstorm");
    cp5.getController("3").moveTo("sandstorm");
@@ -709,6 +761,7 @@ void draw () {
   //UI Elements
   if (activeTab == 0) {
     cp5.getGroup("scoutNum").setColorLabel(color(textCl));
+    cp5.getGroup("startPos").setColorLabel(color(textCl));
     textAlign(CENTER);
     textSize(fontSize+20);
     text(matchNum, xLocation*6.82, yLocation*6.35);
@@ -716,7 +769,8 @@ void draw () {
     textSize(fontSize);
     text("Team Number", xLocation*6.82, yLocation*1.7);
     text("Match Number", xLocation*6.82, yLocation*6.8);
-    text("Scout Number", xLocation*1.2, yLocation*3.2);
+    text("Scout Number", xLocation*1.2, yLocation*2.7);
+    text("Starting Position", xLocation*12.3, yLocation*2.7);
     textAlign(LEFT);
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
@@ -758,6 +812,8 @@ void draw () {
     cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
+    cp5.getGroup("endPos").setColorLabel(color(textCl));
+    text("Ending Position", xLocation*11, yLocation*.7);
   }
 }
 
@@ -824,7 +880,7 @@ void subtractMatch() {
 //read variables
 int teamId;
 String alliace;
-int startPos;
+int startPos;//
 int stormRocketHatchLow;//
 int stormCargoHatchLow;//
 int stormHatchMid;//
@@ -834,7 +890,6 @@ int stormCargoCargoLow;//
 int stormCargoMid;//
 int stormCargoHigh;//
 int stormTechFouls;
-int stormFouls;
 int hatchRocketLow;//
 int hatchCargoLow;//
 int hatchMid;//
@@ -843,9 +898,17 @@ int cargoRocketLow;//
 int cargoCargoLow;//
 int cargoMid;//
 int cargoHigh;//
-int techFouls;
-int fouls;
-int endPos;
+int techFouls;//
+int fouls;//
+int endPos;//
+int scoutNum;//
+String cantDo;//
+String struggledWith;//
+String didWell;//
+boolean redCard;
+boolean yellowCard;
+boolean disabled;
+boolean flippedOver;
 
 class B extends A {
 }
@@ -853,11 +916,11 @@ class B extends A {
 void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isAssignableFrom(Textfield.class)) {
-    cp5.get("didWellInput").getStringValue();
-    //println(cp5.get("didWellInput").getStringValue());
+    didWell = cp5.get("didWellInput").getStringValue();
+    struggledWith = cp5.get("struggledInput").getStringValue();
+    cantDo = cp5.get("cantInput").getStringValue();
   }
   if (theEvent.isTab()) {
-    //println("got an event from tab : "+theEvent.getTab().getName()+" with id "+theEvent.getTab().getId());
   }
 
   if (theEvent.isAssignableFrom(CheckBox.class)) {
@@ -954,73 +1017,89 @@ void controlEvent(ControlEvent theEvent) {
     cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
       + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
       ;
-
-
   }
 
-    //-----------------------------------------------------------------Penalties, Fouls, ETC--------------------------------------------------------------------
-    if (theEvent.isFrom("techFoul")) {
-      if(theEvent.getArrayValue(0) == 1){
-        techFouls = 0;
-      }
-      else if(theEvent.getArrayValue(1) == 1){
-        techFouls = 1;
-      }
-      else if(theEvent.getArrayValue(2) == 1){
-        techFouls = 2;
-      }
-      else if(theEvent.getArrayValue(3) == 1){
-        techFouls = 3;
-      }
-      else if(theEvent.getArrayValue(4) == 1){
-        techFouls = 4;
-      }
+  //-----------------------------------------------------------------Penalties, Fouls, ETC--------------------------------------------------------------------
+  if (theEvent.isFrom("techFoul")) {
+    if (theEvent.getArrayValue(0) == 1) {
+      techFouls = 0;
+    } else if (theEvent.getArrayValue(1) == 1) {
+      techFouls = 1;
+    } else if (theEvent.getArrayValue(2) == 1) {
+      techFouls = 2;
+    } else if (theEvent.getArrayValue(3) == 1) {
+      techFouls = 3;
+    } else if (theEvent.getArrayValue(4) == 1) {
+      techFouls = 4;
     }
-    
-    if (theEvent.isFrom("foul")) {
-      if(theEvent.getArrayValue(0) == 1){
-        techFouls = 0;
-      }
-      else if(theEvent.getArrayValue(1) == 1){
-        techFouls = 1;
-      }
-      else if(theEvent.getArrayValue(2) == 1){
-        techFouls = 2;
-      }
-      else if(theEvent.getArrayValue(3) == 1){
-        techFouls = 3;
-      }
-      else if(theEvent.getArrayValue(4) == 1){
-        techFouls = 4;
-      }
-      else if(theEvent.getArrayValue(5) == 1){
-        techFouls = 5;
-      }
+  }
+
+  if (theEvent.isFrom("foul")) {
+    if (theEvent.getArrayValue(0) == 1) {
+      fouls = 0;
+    } else if (theEvent.getArrayValue(1) == 1) {
+      fouls = 1;
+    } else if (theEvent.getArrayValue(2) == 1) {
+      fouls = 2;
+    } else if (theEvent.getArrayValue(3) == 1) {
+      fouls = 3;
+    } else if (theEvent.getArrayValue(4) == 1) {
+      fouls = 4;
+    } else if (theEvent.getArrayValue(5) == 1) {
+      fouls = 5;
     }
+  }
     
-    
-    
-    if (theEvent.isFrom("scoutNum")) {
-      if(theEvent.getArrayValue(0) == 1){
-        techFouls = 1;
-      }
-      else if(theEvent.getArrayValue(1) == 1){
-        techFouls = 2;
-      }
-      else if(theEvent.getArrayValue(2) == 1){
-        techFouls = 3;
-      }
-      else if(theEvent.getArrayValue(3) == 1){
-        techFouls = 4;
-      }
-      else if(theEvent.getArrayValue(4) == 1){
-        techFouls = 5;
-      }
-      else if(theEvent.getArrayValue(5) == 1){
-        techFouls = 6;
-      }
+  if (theEvent.isFrom("startPos")) {
+    if (theEvent.getArrayValue(0) == 1) {
+      startPos = 1;
+    } else if (theEvent.getArrayValue(1) == 1) {
+      startPos = 2;
     }
+  }
+  
+  
+  if (theEvent.isFrom("endPos")) {
+    if (theEvent.getArrayValue(0) == 1) {
+      endPos = 1;
+    } else if (theEvent.getArrayValue(1) == 1) {
+      endPos = 2;
+    } else if (theEvent.getArrayValue(2) == 1) {
+      endPos = 3;
+    }
+  }
+
+
+
+  if (theEvent.isFrom("scoutNum")) {
+    if (theEvent.getArrayValue(0) == 1) {
+      scoutNum = 1;
+    } else if (theEvent.getArrayValue(1) == 1) {
+      scoutNum = 2;
+    } else if (theEvent.getArrayValue(2) == 1) {
+      scoutNum = 3;
+    } else if (theEvent.getArrayValue(3) == 1) {
+      scoutNum = 4;
+    } else if (theEvent.getArrayValue(4) == 1) {
+      scoutNum = 5;
+    } else if (theEvent.getArrayValue(5) == 1) {
+      scoutNum = 6;
+    }
+  }
 }
+
+  void redCard(boolean toggled){
+    redCard = toggled;
+  }
+  void yellowCard(boolean toggled){
+    yellowCard = toggled;
+  }
+  void disabled(boolean toggled){
+    disabled = toggled;
+  }
+  void flippedOver(boolean toggled){
+    flippedOver = toggled;
+  }
 
 
 
