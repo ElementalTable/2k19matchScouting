@@ -54,11 +54,13 @@ String textValue = "";
 Textfield cantText;
 Textfield struggledText;
 Textfield didWellText;
+Textfield teamNum;
 void setup () {
   B b = new B();
   fullScreen();
   PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
   ControlFont font = new ControlFont(pfont, 15);
+  ControlFont largeFont = new ControlFont(pfont, 40);
 
   //c = new GUIController(this);
   //rc = new IFRadioController("Mode Selector");
@@ -600,6 +602,16 @@ void setup () {
     .setFont(font)
     .setLabel("What they can't do")
     ;
+    
+  teamNum = cp5.addTextfield("teamNum")
+    .setColorValue(color(white))
+    .setPosition(xLocation*6.3, yLocation*1)
+    .setSize(sizeing*1, sizeingPt2*3)
+    .setFont(largeFont)
+    .setLabel("Team Number")
+    ;
+    
+  cp5.getController("teamNum").getCaptionLabel().setFont(font).setPaddingX(-5);
 
   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
 
@@ -637,6 +649,8 @@ void setup () {
   cp5.getGroup("rocket2HatchTele").moveTo("teleop");
   cp5.getGroup("shipCargoTele").moveTo("teleop");
   cp5.getGroup("shipHatchTele").moveTo("teleop");
+  
+  cp5.getController("teamNum").moveTo("default");
 
   cp5.getController("toggleDarkMode").moveTo("settings");
 }
@@ -649,6 +663,9 @@ void draw () {
   //  test.setProgress((test.getProgress() + 0.01) % 1);
 
   //UI Elements
+  if(activeTab == 0){
+    cp5.getController("teamNum").getCaptionLabel().setColor(color(textCl));
+  }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
     line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
     textSize(fontSize);
@@ -693,7 +710,7 @@ void draw () {
 
 
 abstract class A implements ControlListener {
-  void rocketCargo(float theValue) {
+  void rocketCargo() {
     //println(theValue);
   }
   public void controlEvent(ControlEvent theEvent) {
@@ -734,8 +751,7 @@ void toggleDarkMode(boolean darkMode) {
   }
 }
 
-void submit(int theValue) {
-
+void submit() {
   didWellText.submit();
   struggledText.submit();
   cantText.submit();
@@ -879,28 +895,6 @@ void controlEvent(ControlEvent theEvent) {
 }
 
 
-/*
-void performTextfieldActions() {
- println("\n");
- // Textfield.getText();
- println("the current text of myTextfield: "+myTextfield.getText());
- println("the current value of textValue: "+textValue);
- // Textfield.setText();
- myTextfield.setText("changed the text of a textfield");
- println("changing text of myTextfield to: "+myTextfield.getText());
- // Textfield.getTextList();
- println("the textlist of myTextfield has "+myTextfield.getTextList().length+" items.");
- for (int i=0;i<myTextfield.getTextList().length;i++) {
- println("\t"+myTextfield.getTextList()[i]);
- }
- println("\n");
- }
- */
-
-public void textinput(String theText) {
-  // receiving text from controller textinput
-  //println("a textfield event for controller 'textinput': "+theText);
-}
 
 /*void loadJSON(int MATCH) {
  values = loadJSONArray("dataIn.json");
