@@ -54,7 +54,7 @@ String textValue = "";
 Textfield cantText;
 Textfield struggledText;
 Textfield didWellText;
-Textfield teamNum;
+Textfield match;
 void setup () {
   B b = new B();
   fullScreen();
@@ -603,18 +603,64 @@ void setup () {
     .setLabel("What they can't do")
     ;
     
-  teamNum = cp5.addTextfield("teamNum")
-    .setColorValue(color(white))
-    .setPosition(xLocation*6.3, yLocation*1)
-    .setSize(sizeing*1, sizeingPt2*3)
-    .setFont(largeFont)
-    .setLabel("Team Number")
+    //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
+cp5.addBang("addMatch" ,(xLocation*7+13), (yLocation*6), 40,40)
+    .setFont(font)
     ;
     
-  cp5.getController("teamNum").getCaptionLabel().setFont(font).setPaddingX(-5);
-
+    cp5.getController("addMatch").setLabel("+");
+    cp5.getController("addMatch").getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER).setColor(textCl).setFont(largeFont);
+    
+    cp5.addBang("subtractMatch" ,(xLocation*6+13), (yLocation*6), 40,40)
+    .setFont(font)
+    ;
+    
+    cp5.getController("subtractMatch").setLabel("-");
+    cp5.getController("subtractMatch").getCaptionLabel().align(ControlP5.CENTER,ControlP5.CENTER).setColor(textCl).setFont(largeFont);
   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
 
+
+
+  cp5.addRadioButton("scoutNum")
+    .setPosition(xLocation, yLocation*3.5)
+    .setSize(sizeingPt2, sizeingPt2)
+    .setItemsPerRow(1)
+    .setSpacingColumn(xSpacing/5+(xSpacing/10))
+    .setSpacingRow(ySpacing/2)
+    .activateEvent(true)
+    .setColorActive(activeBut)
+    .setColorBackground(color(unactiveBut))
+    .addItem("one", 1)
+    .addItem("two", 2)
+    .addItem("three", 3)
+    .addItem("four", 4)
+    .addItem("five", 5)
+    .addItem("six", 6)
+    .getCaptionLabel()
+    .setFont(font);
+  ;
+  
+  cp5.getGroup("techFoul");
+  cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("one").setLabel("1");
+  cp5.getController("two").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("two").setLabel("2");
+  cp5.getController("three").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("three").setLabel("3");
+  cp5.getController("four").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("four").setLabel("4");
+  cp5.getController("five").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("five").setLabel("5");
+  cp5.getController("six").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("six").setLabel("6");
+  
+  
+  
+  
+  //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
+  
+  
+  
   //cp5.getController("sliderValue").moveTo("sneeze");
   //cp5.getController("slider").moveTo("sneeze");
   //cp5.getController("button").moveTo("sneeze");
@@ -649,8 +695,6 @@ void setup () {
   cp5.getGroup("rocket2HatchTele").moveTo("teleop");
   cp5.getGroup("shipCargoTele").moveTo("teleop");
   cp5.getGroup("shipHatchTele").moveTo("teleop");
-  
-  cp5.getController("teamNum").moveTo("default");
 
   cp5.getController("toggleDarkMode").moveTo("settings");
 }
@@ -664,7 +708,16 @@ void draw () {
 
   //UI Elements
   if(activeTab == 0){
-    cp5.getController("teamNum").getCaptionLabel().setColor(color(textCl));
+    cp5.getGroup("scoutNum").setColorLabel(color(textCl));
+    textAlign(CENTER);
+    textSize(fontSize+20);
+    text(matchNum,xLocation*6.82,yLocation*6.35);
+    text(teamId,xLocation*6.82,yLocation*1.2);
+    textSize(fontSize);
+    text("Team Number",xLocation*6.82,yLocation*1.7);
+    text("Match Number",xLocation*6.82,yLocation*6.8);
+    text("Scout Number", xLocation*1.2, yLocation*3.2);
+    textAlign(LEFT);
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
     line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
@@ -755,8 +808,18 @@ void submit() {
   didWellText.submit();
   struggledText.submit();
   cantText.submit();
+  matchNum++;
 }
 
+void addMatch(){
+  matchNum++;
+}
+
+void subtractMatch(){
+  if(matchNum>1){
+  matchNum--;
+  }
+}
 
 //read variables
 int teamId;
