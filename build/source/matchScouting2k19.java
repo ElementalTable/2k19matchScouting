@@ -1,4 +1,22 @@
-import controlP5.*;
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import controlP5.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class matchScouting2k19 extends PApplet {
+
+
 //import interfascia.*;
 ControlP5 cp5;
 
@@ -60,10 +78,10 @@ int la = 6;
 int ck = 28;
 int white = 255;
 
-color backgroundCl;
-color textCl;
-color unactiveBut;
-color activeBut;
+int backgroundCl;
+int textCl;
+int unactiveBut;
+int activeBut;
 
 String alli;
 int i = 0;
@@ -94,10 +112,10 @@ Textfield cantText;
 Textfield struggledText;
 Textfield didWellText;
 Textfield match;
-void setup () {
+public void setup () {
   loadJSON();
   B b = new B();
-  fullScreen();
+  
   PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
   ControlFont font = new ControlFont(pfont, 15);
   ControlFont largeFont = new ControlFont(pfont, 40);
@@ -209,7 +227,7 @@ void setup () {
   //---------------------------------------------------------------------------ROCKET1---------------------------------------------------------------------------------
   //Sandstorm Rocket1 Checkboxes
   cp5.addCheckBox("rocket1CargoSand")
-    .setPosition(xLocation*1.48, yLocation*2)
+    .setPosition(xLocation*1.48f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(ySpacing)
@@ -245,7 +263,7 @@ void setup () {
     ;
   //Teleop Rocket1 Checkboxes
   cp5.addCheckBox("rocket1CargoTele")
-    .setPosition(xLocation*1.48, yLocation*2)
+    .setPosition(xLocation*1.48f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(ySpacing)
@@ -283,7 +301,7 @@ void setup () {
   //-------------------------------------------------------------------------ROCKET2-----------------------------------------------------------------------------------------
   //Rocket 2 Cargo Sandstorm
   cp5.addCheckBox("rocket2CargoSand")
-    .setPosition(xLocation*3.98, yLocation*2)
+    .setPosition(xLocation*3.98f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(ySpacing)
@@ -301,7 +319,7 @@ void setup () {
     ;
 
   cp5.addCheckBox("rocket2HatchSand")
-    .setPosition(xLocation*3.5, yLocation*2)
+    .setPosition(xLocation*3.5f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/5))
@@ -319,7 +337,7 @@ void setup () {
     ;
   //Rocket 2 Teleop checkboxes
   cp5.addCheckBox("rocket2CargoTele")
-    .setPosition(xLocation*3.98, yLocation*2)
+    .setPosition(xLocation*3.98f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(ySpacing)
@@ -337,7 +355,7 @@ void setup () {
     ;
 
   cp5.addCheckBox("rocket2HatchTele")
-    .setPosition(xLocation*3.5, yLocation*2)
+    .setPosition(xLocation*3.5f, yLocation*2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/5))
@@ -446,7 +464,7 @@ void setup () {
   //----------------------------------------------------------------------FOULS/TECHFOULS---------------------------------------------------------------------------------------
   //Storm tech fouls
   cp5.addRadioButton("techFoul")
-    .setPosition(xLocation, yLocation*4.7)
+    .setPosition(xLocation, yLocation*4.7f)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -482,7 +500,7 @@ void setup () {
 
   //Storm fouls
   cp5.addRadioButton("foul")
-    .setPosition(xLocation*4, yLocation*4.7)
+    .setPosition(xLocation*4, yLocation*4.7f)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -537,7 +555,7 @@ void setup () {
 
   //-----------------------------------------------------------------------------------Penalty Switches-------------------------------------------------------------------
   Toggle yellowCard = cp5.addToggle("yellowCard")
-    .setPosition(xLocation*8, yLocation*4.7)
+    .setPosition(xLocation*8, yLocation*4.7f)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -553,7 +571,7 @@ void setup () {
 
 
   Toggle redCard = cp5.addToggle("redCard")
-    .setPosition(xLocation*8, yLocation*5.2)
+    .setPosition(xLocation*8, yLocation*5.2f)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -571,7 +589,7 @@ void setup () {
 
 
   Toggle disabled = cp5.addToggle("disabled")
-    .setPosition(xLocation*8, yLocation*5.7)
+    .setPosition(xLocation*8, yLocation*5.7f)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -589,7 +607,7 @@ void setup () {
 
 
   Toggle flippedOver = cp5.addToggle("flippedOver")
-    .setPosition(xLocation*8, yLocation*6.2)
+    .setPosition(xLocation*8, yLocation*6.2f)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -631,7 +649,7 @@ void setup () {
 
   struggledText = cp5.addTextfield("struggledInput")
     .setColorValue(color(white))
-    .setPosition(xLocation, yLocation*4.5)
+    .setPosition(xLocation, yLocation*4.5f)
     .setSize(sizeing*11, sizeingPt2)
     .setFont(font)
     .setLabel("What they struggled with")
@@ -647,7 +665,7 @@ void setup () {
 
 
 cp5.addRadioButton("endPos")
-    .setPosition(xLocation*11.8, yLocation)
+    .setPosition(xLocation*11.8f, yLocation)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -727,7 +745,7 @@ cp5.addRadioButton("endPos")
 
 
   cp5.addRadioButton("startPos")
-    .setPosition(xLocation*11.5, yLocation*3.7)
+    .setPosition(xLocation*11.5f, yLocation*3.7f)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/10))
@@ -794,7 +812,7 @@ cp5.addRadioButton("endPos")
 }
 
 
-void draw () {
+public void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
@@ -807,40 +825,40 @@ void draw () {
     cp5.getGroup("startPos").setColorLabel(color(textCl));
     textAlign(CENTER);
     textSize(fontSize+20);
-    text(matchNum, xLocation*6.82, yLocation*6.35);
-    text(teamId, xLocation*6.82, yLocation*1.2);
+    text(matchNum, xLocation*6.82f, yLocation*6.35f);
+    text(teamId, xLocation*6.82f, yLocation*1.2f);
     textSize(fontSize);
-    text("Team Number", xLocation*6.82, yLocation*1.7);
-    text("Match Number", xLocation*6.82, yLocation*6.8);
-    text("Scout Number", xLocation*1.2, yLocation*2.7);
-    text("Starting Position", xLocation*12.3, yLocation*2.7);
+    text("Team Number", xLocation*6.82f, yLocation*1.7f);
+    text("Match Number", xLocation*6.82f, yLocation*6.8f);
+    text("Scout Number", xLocation*1.2f, yLocation*2.7f);
+    text("Starting Position", xLocation*12.3f, yLocation*2.7f);
     textAlign(LEFT);
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
-    line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
+    line(0, (yLocation*3.7f), width, (yLocation*3.7f)); //Draw horisontal line
     textSize(fontSize);
 
     //Rocket Text
     textSize(fontSize + 5);
-    text("Rockets", xLocation*2.5, yLocation*1);
+    text("Rockets", xLocation*2.5f, yLocation*1);
     textSize(fontSize);
-    text("Left", xLocation*1.6, yLocation*1.8);
-    text("Right", xLocation*4.05, yLocation*1.8);
+    text("Left", xLocation*1.6f, yLocation*1.8f);
+    text("Right", xLocation*4.05f, yLocation*1.8f);
     textSize(fontSize - 3);
-    text("Cargo", xLocation*1.5, yLocation*3.3);
-    text("Cargo", xLocation*4.05, yLocation*3.3);
+    text("Cargo", xLocation*1.5f, yLocation*3.3f);
+    text("Cargo", xLocation*4.05f, yLocation*3.3f);
     textSize(fontSize);
 
     //Cargo ship text
     textSize(fontSize + 5);
-    text("Cargo Ship", xLocation*8.6, yLocation*1);
+    text("Cargo Ship", xLocation*8.6f, yLocation*1);
     textSize(fontSize);
-    text("Hatches", xLocation*7.42, yLocation*1.8);
-    text("Cargo", xLocation*10.52, yLocation*1.8);
+    text("Hatches", xLocation*7.42f, yLocation*1.8f);
+    text("Cargo", xLocation*10.52f, yLocation*1.8f);
 
     //Fouls text
-    text("Tech Fouls", xLocation*.7, yLocation*4.3);
-    text("Fouls", xLocation*3.9, yLocation*4.3);
+    text("Tech Fouls", xLocation*.7f, yLocation*4.3f);
+    text("Fouls", xLocation*3.9f, yLocation*4.3f);
 
     cp5.getGroup("techFoul").setColorLabel(color(textCl));
     cp5.getGroup("foul").setColorLabel(color(textCl));
@@ -856,13 +874,13 @@ void draw () {
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
     cp5.getGroup("endPos").setColorLabel(color(textCl));
-    text("Ending Position", xLocation*11, yLocation*.7);
+    text("Ending Position", xLocation*11, yLocation*.7f);
   }
 }
 
 
 abstract class A implements ControlListener {
-  void rocketCargo() {
+  public void rocketCargo() {
     //println(theValue);
   }
   public void controlEvent(ControlEvent theEvent) {
@@ -893,7 +911,7 @@ abstract class A implements ControlListener {
  myTextfield.setAutoClear(theFlag);
  }*/
 
-void toggleDarkMode(boolean darkMode) {
+public void toggleDarkMode(boolean darkMode) {
   if (darkMode == true) {
     backgroundCl=reBlack;
     textCl = white;
@@ -903,20 +921,19 @@ void toggleDarkMode(boolean darkMode) {
   }
 }
 
-void submit() {
+public void submit() {
   didWellText.submit();
   struggledText.submit();
   cantText.submit();
   addMatch();
-  saveJSON();
 }
 
-void addMatch() {
+public void addMatch() {
   matchNum++;
   setTeamNumber(scoutNum, matchNum);
 }
 
-void subtractMatch() {
+public void subtractMatch() {
   if (matchNum>1) {
     matchNum--;
   }
@@ -928,7 +945,7 @@ void subtractMatch() {
 class B extends A {
 }
 
-void controlEvent(ControlEvent theEvent) {
+public void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isAssignableFrom(Textfield.class)) {
     didWell = cp5.get("didWellInput").getStringValue();
@@ -1103,21 +1120,21 @@ void controlEvent(ControlEvent theEvent) {
     setTeamNumber(scoutNum,matchNum);
   }
 }
-  void redCard(boolean toggled){
+  public void redCard(boolean toggled){
     redCard = toggled;
   }
-  void yellowCard(boolean toggled){
+  public void yellowCard(boolean toggled){
     yellowCard = toggled;
   }
-  void disabled(boolean toggled){
+  public void disabled(boolean toggled){
     disabled = toggled;
   }
-  void flippedOver(boolean toggled){
+  public void flippedOver(boolean toggled){
     flippedOver = toggled;
   }
 
 
-void loadJSON(){
+public void loadJSON(){
   JSONArray values;
   values = loadJSONArray("dataIn.json");
 
@@ -1141,7 +1158,7 @@ void loadJSON(){
   }
 
 }
-void saveJSON() {
+public void saveJSON() {
 
 JSONArray values1;
 int id = (matchNum-1)*6;
@@ -1192,7 +1209,7 @@ saveJSONArray(values1,"data/dataOut.json");
  values1.setJSONObject(i-1, match);
  saveJSONArray(values1, "data/dataOut.json");
  */
- void setTeamNumber(int scoutNum, int matchNum){
+ public void setTeamNumber(int scoutNum, int matchNum){
    int teamNum;
    if(scoutNum <= 3){
      teamNum = matches[matchNum].getRed(scoutNum-1);
@@ -1201,3 +1218,42 @@ saveJSONArray(values1,"data/dataOut.json");
    }
    teamId = str(teamNum);
  }
+public class match {
+  // Fields
+  int matchNum;
+  int[] red = {0,0,0};
+  int[] blue = {0,0,0};
+
+  // Constructors
+  public match (int matchNum) {
+    this.matchNum = matchNum;
+  }
+
+  //methods
+  public void setRed(String[] redIn) {
+    for (int t = 0; t <= 2; t++) {
+      this.red[t] = Integer.parseInt(redIn[t].replaceAll("[\\D]", ""));
+    }
+  }
+  public void setBlue(String[] blueIn) {
+    for (int t = 0; t <= 2; t++) {
+      this.blue[t] = Integer.parseInt(blueIn[t].replaceAll("[\\D]", ""));
+    }
+  }
+  public int getBlue(int t) {
+    return blue[t];
+  }
+  public int getRed(int t){
+    return red[t];
+  }
+ }
+  public void settings() {  fullScreen(); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "matchScouting2k19" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}
