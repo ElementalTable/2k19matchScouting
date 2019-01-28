@@ -907,8 +907,8 @@ void submit() {
   didWellText.submit();
   struggledText.submit();
   cantText.submit();
-  addMatch();
   saveJSON();
+  addMatch();
 }
 
 void addMatch() {
