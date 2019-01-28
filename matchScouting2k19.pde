@@ -889,7 +889,6 @@ int stormCargoRocketLow;//
 int stormCargoCargoLow;//
 int stormCargoMid;//
 int stormCargoHigh;//
-int stormTechFouls;
 int hatchRocketLow;//
 int hatchCargoLow;//
 int hatchMid;//
@@ -905,10 +904,10 @@ int scoutNum;//
 String cantDo;//
 String struggledWith;//
 String didWell;//
-boolean redCard;
-boolean yellowCard;
-boolean disabled;
-boolean flippedOver;
+boolean redCard;//
+boolean yellowCard;//
+boolean disabled;//
+boolean flippedOver;//
 
 class B extends A {
 }
