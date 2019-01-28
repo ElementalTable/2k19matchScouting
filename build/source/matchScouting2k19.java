@@ -112,6 +112,7 @@ Textfield cantText;
 Textfield struggledText;
 Textfield didWellText;
 Textfield match;
+String matchId = str(matchNum);
 public void setup () {
   loadJSON();
   B b = new B();
@@ -1202,7 +1203,9 @@ match.setBoolean("Disabled", disabled);
 match.setBoolean("Flipped Over", flippedOver);
 
 values1.setJSONObject(i-1, match);
-saveJSONArray(values1,"data/dataOut.json");
+saveJSONArray(values1,"Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+saveJSONArray(values1,"Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+saveJSONArray(values1,"X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
 }
 
 
