@@ -920,7 +920,7 @@ abstract class A implements ControlListener {
  }*/
 
 void toggleDarkMode(boolean darkMode) {
-  if (darkMode == true) {
+  if (!darkMode) {
     backgroundCl=reBlack;
     textCl = white;
   } else {
