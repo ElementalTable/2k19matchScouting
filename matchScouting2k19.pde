@@ -14,7 +14,7 @@ match[] matches;
 
 //read variables
 String teamId = "0000";
-String alliance;
+String alliance = "Alliance";
 int startPos;//
 int stormRocketHatchLow;//
 int stormCargoHatchLow;//
@@ -821,14 +821,26 @@ void draw () {
     cp5.getGroup("startPos").setColorLabel(color(textCl));
     textAlign(CENTER);
     textSize(fontSize+20);
-    text(matchNum, xLocation*6.82, yLocation*6.35);
     text(teamId, xLocation*6.82, yLocation*1.2);
+    text(matchNum, xLocation*6.82, yLocation*6.35);
     textSize(fontSize);
     text("Team Number", xLocation*6.82, yLocation*1.7);
     text("Match Number", xLocation*6.82, yLocation*6.8);
     text("Scout Number", xLocation*1.2, yLocation*2.7);
     text("Starting Position", xLocation*12.3, yLocation*2.7);
+    
+    color allianceColor = color(100,100,100);
+    if (alliance == "Blue") {allianceColor = color(20,20,250);}
+    if (alliance == "Red")  {allianceColor = color(250,20,20);}
+    fill(allianceColor);
+    rectMode(CENTER);
+    rect(xLocation*6.82, yLocation*2,110,35);
+    fill(textCl);
+    text(alliance, xLocation*6.82, yLocation*2.1);
     textAlign(LEFT);
+    
+    
+    
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
     line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
@@ -1563,8 +1575,10 @@ void setTeamNumber(int scoutNum, int matchNum) {
   int teamNum;
   if (scoutNum <= 3) {
     teamNum = matches[matchNum].getRed(scoutNum-1);
+    alliance = "Red";
   } else {
     teamNum = matches[matchNum].getBlue(scoutNum-4);
+  alliance = "Blue";
   }
   teamId = str(teamNum);
 }
