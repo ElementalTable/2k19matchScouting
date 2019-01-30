@@ -72,7 +72,6 @@ int eeB = 40;
 int la = 6;
 int ck = 28;
 int white = 255;
-
 color backgroundCl;
 color textCl;
 color unactiveBut;
@@ -86,8 +85,8 @@ int xLocation = 100;
 int yLocation = 100;
 int xSpacing = 105;
 int ySpacing = 30;
-int sizeing = 100;
-int sizeingPt2 = 20;
+int sizeing = 110;
+int sizeingPt2 = 30;
 int fontSize = 24;
 /*GUIController c;
  IFRadioController rc;
@@ -620,8 +619,8 @@ void setup () {
   //----------------------------------------------------------------------------------Dark Mode----------------------------------------------------------------------------
   cp5.addToggle("toggleDarkMode", false)
     .setLabel("Dark Mode")
-    .setColorActive(color(activeBut))
-    .setColorBackground(color(unactiveBut))
+    .setColorActive(color(unactiveBut))
+    .setColorBackground(color(activeBut))
     .setPosition(xLocation, yLocation)
     .setSize(sizeing*2, sizeingPt2*2)
     .setValue(0)
@@ -661,7 +660,7 @@ void setup () {
 
 
   cp5.addRadioButton("endPos")
-    .setPosition(xLocation*11.8, yLocation)
+    .setPosition(xLocation*11.8, yLocation*1.2)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -699,6 +698,10 @@ void setup () {
   cp5.getController("subtractMatch").setLabel("-");
   cp5.getController("subtractMatch").getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER).setColor(textCl).setFont(largeFont);
   cp5.addButton("submit", 0, (xLocation*6), (yLocation*7), 100, 40).setFont(font);
+/*cp5.addButton("moveToTele", 0, (xLocation*11), (yLocation*6+50), 200, 60).setFont(font).setLabel("Teleop");
+  cp5.addButton("moveToPost", 0, (xLocation*11), (yLocation*6+50), 200, 60).setFont(font).setLabel("Post Game");
+  cp5.getController("moveToTele").getCaptionLabel().toUpperCase(false).setSize(20);
+  cp5.getController("moveToPost").getCaptionLabel().toUpperCase(false).setSize(20);*/
 
 
 
@@ -741,7 +744,7 @@ void setup () {
 
 
   cp5.addRadioButton("startPos")
-    .setPosition(xLocation*11.5, yLocation*3.7)
+    .setPosition(xLocation*11.3, yLocation*3.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/10))
@@ -796,6 +799,7 @@ void setup () {
   cp5.getController("disabled").moveTo("sandstorm");
   cp5.getController("redCard").moveTo("sandstorm");
   cp5.getController("flippedOver").moveTo("sandstorm");
+  //cp5.getController("moveToTele").moveTo("sandstorm");
 
   cp5.getGroup("rocket1CargoTele").moveTo("teleop");
   cp5.getGroup("rocket1HatchTele").moveTo("teleop");
@@ -803,6 +807,7 @@ void setup () {
   cp5.getGroup("rocket2HatchTele").moveTo("teleop");
   cp5.getGroup("shipCargoTele").moveTo("teleop");
   cp5.getGroup("shipHatchTele").moveTo("teleop");
+  //cp5.getController("moveToPost").moveTo("teleop");
 
   cp5.getController("toggleDarkMode").moveTo("settings");
 }
@@ -827,20 +832,21 @@ void draw () {
     text("Team Number", xLocation*6.82, yLocation*1.7);
     text("Match Number", xLocation*6.82, yLocation*6.8);
     text("Scout Number", xLocation*1.2, yLocation*2.7);
-    text("Starting Position", xLocation*12.3, yLocation*2.7);
-    
-    color allianceColor = color(100,100,100);
-    if (alliance == "Blue") {allianceColor = color(20,20,250);}
-    if (alliance == "Red")  {allianceColor = color(250,20,20);}
+    text("Starting Position", xLocation*12.2, yLocation*2.7);
+
+    color allianceColor = color(100, 100, 100);
+    if (alliance == "Blue") {
+      allianceColor = color(20, 20, 250);
+    }
+    if (alliance == "Red") {
+      allianceColor = color(250, 20, 20);
+    }
     fill(allianceColor);
     rectMode(CENTER);
-    rect(xLocation*6.82, yLocation*2,110,35);
+    rect(xLocation*6.82, yLocation*2, 110, 35);
     fill(textCl);
     text(alliance, xLocation*6.82, yLocation*2.1);
     textAlign(LEFT);
-    
-    
-    
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
     line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
@@ -848,25 +854,25 @@ void draw () {
 
     //Rocket Text
     textSize(fontSize + 5);
-    text("Rockets", xLocation*2.5, yLocation*1);
+    text("Rockets", xLocation*2.6, yLocation*1);
     textSize(fontSize);
-    text("Left", xLocation*1.6, yLocation*1.8);
-    text("Right", xLocation*4.05, yLocation*1.8);
+    text("Left", xLocation*1.7, yLocation*1.8);
+    text("Right", xLocation*4.1, yLocation*1.8);
     textSize(fontSize - 3);
-    text("Cargo", xLocation*1.5, yLocation*3.3);
-    text("Cargo", xLocation*4.05, yLocation*3.3);
+    text("Cargo", xLocation*1.6, yLocation*3.54);
+    text("Cargo", xLocation*4.15, yLocation*3.54);
     textSize(fontSize);
 
     //Cargo ship text
     textSize(fontSize + 5);
-    text("Cargo Ship", xLocation*8.6, yLocation*1);
+    text("Cargo Ship", xLocation*8.7, yLocation*1);
     textSize(fontSize);
-    text("Hatches", xLocation*7.42, yLocation*1.8);
-    text("Cargo", xLocation*10.52, yLocation*1.8);
+    text("Hatches", xLocation*7.57, yLocation*1.8);
+    text("Cargo", xLocation*10.67, yLocation*1.8);
 
     //Fouls text
-    text("Tech Fouls", xLocation*.7, yLocation*4.3);
-    text("Fouls", xLocation*3.9, yLocation*4.3);
+    text("Tech Fouls", xLocation*.6, yLocation*4.3);
+    text("Fouls", xLocation*3.85, yLocation*4.3);
 
     cp5.getGroup("techFoul").setColorLabel(color(textCl));
     cp5.getGroup("foul").setColorLabel(color(textCl));
@@ -882,7 +888,7 @@ void draw () {
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
     cp5.getGroup("endPos").setColorLabel(color(textCl));
-    text("Ending Position", xLocation*11, yLocation*.7);
+    text("Ending Position", xLocation*11, yLocation*1);
   }
 }
 
@@ -893,7 +899,9 @@ abstract class A implements ControlListener {
   }
   public void controlEvent(ControlEvent theEvent) {
     if (theEvent.isTab()) {
-      activeTab = theEvent.getTab().getId();
+      if(theEvent.isTab()){
+        activeTab = theEvent.getTab().getId();
+      }
       if (activeTab == 1) {
         cp5.getGroup("techFoul").moveTo("sandstorm");
         cp5.getGroup("foul").moveTo("sandstorm");
@@ -935,18 +943,18 @@ void submit() {
   cantText.submit();
   saveJSON();
   addMatch();
-  
+
   hatchRocketLow = hatchRocketLow - stormRocketHatchLow;
   cargoRocketLow = cargoRocketLow - stormCargoRocketLow;
   hatchCargoLow = hatchCargoLow - stormCargoHatchLow;
   cargoCargoLow = cargoCargoLow - stormCargoCargoLow;
-  
+
   hatchMid = hatchMid - stormHatchMid;
   cargoMid = cargoMid - stormCargoMid;
-  
+
   hatchHigh = hatchHigh - stormHatchHigh;
   cargoHigh = cargoHigh - stormCargoHigh;
-  
+
   println("Hatch High" + hatchHigh);
   println("Hatch Mid" + hatchMid);
   println("Hatch Low Rocket" + hatchRocketLow);
@@ -1155,326 +1163,286 @@ void controlEvent(ControlEvent theEvent) {
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) == 1)
     {
       rocket1CargoTele.activate(0);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(0);
     }
 
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(1) == 1)
     {
       rocket1CargoTele.activate(1);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(2) == 1)
     {
       rocket1CargoTele.activate(2);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(3) == 1)
     {
       rocket1CargoTele.activate(3);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(4) == 1)
     {
       rocket1CargoTele.activate(4);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(5) == 1)
     {
       rocket1CargoTele.activate(5);
-    } 
-    else {
+    } else {
       rocket1CargoTele.deactivate(5);
     }
-    
+
     //Rocket 1 Hatches
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(0) == 1)
     {
       rocket1HatchTele.activate(0);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(0);
     }
-    
+
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(1) == 1)
     {
       rocket1HatchTele.activate(1);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(2) == 1)
     {
       rocket1HatchTele.activate(2);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(3) == 1)
     {
       rocket1HatchTele.activate(3);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(4) == 1)
     {
       rocket1HatchTele.activate(4);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(5) == 1)
     {
       rocket1HatchTele.activate(5);
-    } 
-    else {
+    } else {
       rocket1HatchTele.deactivate(5);
     }
-    
+
     //Rocket 2 Cargo
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(0) == 1)
     {
       rocket2CargoTele.activate(0);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(0);
     }
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(1) == 1)
     {
       rocket2CargoTele.activate(1);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(2) == 1)
     {
       rocket2CargoTele.activate(2);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(3) == 1)
     {
       rocket2CargoTele.activate(3);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(4) == 1)
     {
       rocket2CargoTele.activate(4);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(5) == 1)
     {
       rocket2CargoTele.activate(5);
-    } 
-    else {
+    } else {
       rocket2CargoTele.deactivate(5);
     }
-    
+
     //Rocket 2 Hatches
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(0) == 1)
     {
       rocket2HatchTele.activate(0);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(0);
     }
-    
+
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(1) == 1)
     {
       rocket2HatchTele.activate(1);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(2) == 1)
     {
       rocket2HatchTele.activate(2);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(3) == 1)
     {
       rocket2HatchTele.activate(3);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(4) == 1)
     {
       rocket2HatchTele.activate(4);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(5) == 1)
     {
       rocket2HatchTele.activate(5);
-    } 
-    else {
+    } else {
       rocket2HatchTele.deactivate(5);
     }
-    
+
     //Ship Cargo
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(0) == 1)
     {
       shipCargoTele.activate(0);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(0);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(1) == 1)
     {
       shipCargoTele.activate(1);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(2) == 1)
     {
       shipCargoTele.activate(2);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(3) == 1)
     {
       shipCargoTele.activate(3);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(4) == 1)
     {
       shipCargoTele.activate(4);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(5) == 1)
     {
       shipCargoTele.activate(5);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(5);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(6) == 1)
     {
       shipCargoTele.activate(6);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(6);
     }
-    
+
     if ((int)cp5.getGroup("shipCargoSand").getArrayValue(7) == 1)
     {
       shipCargoTele.activate(7);
-    } 
-    else {
+    } else {
       shipCargoTele.deactivate(7);
     }
-    
+
     //Ship Hatches
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(0) == 1)
     {
       shipHatchTele.activate(0);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(0);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(1) == 1)
     {
       shipHatchTele.activate(1);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(1);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(2) == 1)
     {
       shipHatchTele.activate(2);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(2);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(3) == 1)
     {
       shipHatchTele.activate(3);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(3);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(4) == 1)
     {
       shipHatchTele.activate(4);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(4);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(5) == 1)
     {
       shipHatchTele.activate(5);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(5);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(6) == 1)
     {
       shipHatchTele.activate(6);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(6);
     }
-    
+
     if ((int)cp5.getGroup("shipHatchSand").getArrayValue(7) == 1)
     {
       shipHatchTele.activate(7);
-    } 
-    else {
+    } else {
       shipHatchTele.deactivate(7);
     }
   }
@@ -1493,6 +1461,17 @@ void disabled(boolean toggled) {
 void flippedOver(boolean toggled) {
   flippedOver = toggled;
 }
+/*
+void moveToTele() {
+  cp5.getTab("teleop").setActive(true);
+  cp5.getTab("sandstorm").setActive(false);
+  activeTab = 2;
+}
+void moveToPost() {
+  cp5.getTab("postGame").setActive(true);
+  cp5.getTab("teleop").setActive(false);
+  activeTab = 3;
+}*/
 
 
 void loadJSON() {
@@ -1578,7 +1557,7 @@ void setTeamNumber(int scoutNum, int matchNum) {
     alliance = "Red";
   } else {
     teamNum = matches[matchNum].getBlue(scoutNum-4);
-  alliance = "Blue";
+    alliance = "Blue";
   }
   teamId = str(teamNum);
 }
