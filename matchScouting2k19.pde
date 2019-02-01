@@ -140,7 +140,7 @@ void setup () {
   activeBut = color(mi, dGre, enn);
 
   //cp5.getTab("default").setColorBackground(color(eeB, la, ck));
-  cp5.getTab("default")
+  cp5.addTab("default")
     .activateEvent(true)
     .setId(0)
     .setLabel("Welcome")
@@ -158,7 +158,7 @@ void setup () {
     //.setColor(color(eeB, la, ck))
     ;
 
-  cp5.getTab("sandstorm")
+  cp5.addTab("sandstorm")
     .activateEvent(true)
     .setId(1)
     .setLabel("Sandstorm")
@@ -174,7 +174,7 @@ void setup () {
     ;
 
 
-  cp5.getTab("teleop")
+  cp5.addTab("teleop")
     .activateEvent(true)
     .setId(2)
     .setLabel("Teleop")
@@ -189,7 +189,7 @@ void setup () {
     .toUpperCase(false)
     ;
 
-  cp5.getTab("postGame")
+  cp5.addTab("postGame")
     .activateEvent(true)
     .setId(3)
     .setLabel("Post Game")
@@ -203,7 +203,7 @@ void setup () {
     .setSize(fontSize)
     .toUpperCase(false) //they are good at _____ they struggle with ___ they can't do ______
     ;
-  cp5.getTab("settings")
+  cp5.addTab("settings")
     .activateEvent(true)
     .setId(4)
     .setLabel("Settings")
@@ -882,7 +882,6 @@ void draw () {
     cp5.getController("flippedOver").getCaptionLabel().setColor(color(textCl));
   }
 
-
   if (activeTab==3) {
     cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
@@ -896,9 +895,18 @@ void draw () {
 abstract class A implements ControlListener {
 
   public void controlEvent(ControlEvent theEvent) {
-    if (theEvent.isTab()) {
-      println("test");
-      activeTab = theEvent.getTab().getId();
+    if (theEvent.isTab() || theEvent.isFrom("moveToTele")) 
+    {
+      if(theEvent.isTab())
+      {
+        activeTab = theEvent.getTab().getId();
+      }
+      else if(theEvent.isFrom("moveToTele"))
+      {
+        activeTab = 2;
+        //cp5.getTab("teleop").bringToFront("teleop");
+      }
+
       if (activeTab == 1) {
         cp5.getGroup("techFoul").moveTo("sandstorm");
         cp5.getGroup("foul").moveTo("sandstorm");
@@ -1091,7 +1099,7 @@ abstract class A implements ControlListener {
 
     //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
 
-    if (theEvent.isTab()) {
+    if (theEvent.isTab() || theEvent.isFrom("moveToTele")) {
       //Rocket 1 cargo
       if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) == 1)
       {
@@ -1459,7 +1467,6 @@ void flippedOver(boolean toggled) {
 void moveToTele() {
   cp5.getTab("sandstorm").setActive(false);
   cp5.getTab("teleop").setActive(true);
-  cp5.getTab("teleop").activateEvent(true);
 }
 void moveToPost() {
   cp5.getTab("teleop").setActive(false);
