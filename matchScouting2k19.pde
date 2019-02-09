@@ -749,8 +749,28 @@ void setup () {
   cp5.getController("habTwo").setLabel("2");
 
 
+  //---------------------------------------------------------------------Save Location Button-------------------------------------------------------------
+  saveLocationBut = cp5.addRadioButton("saveLocationBut")
+    .setPosition(xLocation, yLocation*3)
+    .setSize(sizeing, sizeingPt2)
+    .setItemsPerRow(1)
+    .setSpacingColumn(xSpacing/5+(xSpacing/10))
+    .setSpacingRow(ySpacing)
+    .activateEvent(true)
+    .setColorActive(activeBut)
+    .setColorBackground(color(unactiveBut))
+    .addItem("external", 1)
+    .addItem("local", 2)
+    .setFont(font);
 
-  //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
+  cp5.getController("external").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("external").setLabel("Save External");
+  cp5.getController("local").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("local").setLabel("Save Local");
+
+  saveLocationBut.activate(0);
+
+  //---------------------------------------------------------------------Move to correct tabs-----------------------------------------------------------
 
   cp5.getGroup("endPos").moveTo("postGame");
   cp5.getController("didWellInput").moveTo("postGame");
@@ -780,6 +800,7 @@ void setup () {
   cp5.getGroup("shipHatchTele").moveTo("teleop");
 
   cp5.getController("toggleDarkMode").moveTo("settings");
+  cp5.getGroup("saveLocationBut").moveTo("settings");
 
   techFoulsBut.activate(0);
   foulsBut.activate(0);
@@ -1039,6 +1060,15 @@ abstract class A implements ControlListener {
       }
     }
 
+    if (theEvent.isFrom("saveLocationBut")) {
+      if (theEvent.getArrayValue(0) == 1)
+      {
+        saveExternal = true;
+      } else {
+        saveExternal = false;
+      }
+    }
+
 
 
     if (theEvent.isFrom("scoutNum")) {
@@ -1062,12 +1092,12 @@ abstract class A implements ControlListener {
     //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
 
     if (
-    theEvent.isFrom(cp5.getGroup("rocket1HatchSand")) ||
-    theEvent.isFrom(cp5.getGroup("rocket1CargoSand")) ||
-    theEvent.isFrom(cp5.getGroup("rocket2HatchSand")) ||
-    theEvent.isFrom(cp5.getGroup("rocket2CargoSand")) || 
-    theEvent.isFrom(cp5.getGroup("shipHatchSand")) || 
-    theEvent.isFrom(cp5.getGroup("shipCargoSand"))) {
+      theEvent.isFrom(cp5.getGroup("rocket1HatchSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket1CargoSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2HatchSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2CargoSand")) || 
+      theEvent.isFrom(cp5.getGroup("shipHatchSand")) || 
+      theEvent.isFrom(cp5.getGroup("shipCargoSand"))) {
       //Rocket 1 cargo
       if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) == 1)
       {
@@ -1075,7 +1105,7 @@ abstract class A implements ControlListener {
       } else {
         rocket1CargoTele.deactivate(0);
       }
-      
+
       if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(1) == 1)
       {
         rocket1CargoTele.activate(1);
@@ -1384,9 +1414,9 @@ void submit() {
 
   hatchHigh = hatchHigh - stormHatchHigh;
   cargoHigh = cargoHigh - stormCargoHigh;
-  
+
   saveJSON(); // Saves to JSON locally or externally
-  
+
   addMatch(); //Duh
   resetAll();
 }
