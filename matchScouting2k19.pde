@@ -67,6 +67,9 @@ RadioButton techFoulsBut;
 RadioButton startPosBut;
 RadioButton endPosBut;
 
+RadioButton saveLocationBut;
+boolean saveExternal = false; //true = save to pi : false = save locally
+
 //Color Vars
 int is = 5;
 int gre = 145;
@@ -749,25 +752,13 @@ void setup () {
 
   //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
 
-
-
-  //cp5.getController("sliderValue").moveTo("sneeze");
-  //cp5.getController("slider").moveTo("sneeze");
-  //cp5.getController("button").moveTo("sneeze");
-  //cp5.getController("buttonValue").moveTo("sneeze");
   cp5.getGroup("endPos").moveTo("postGame");
   cp5.getController("didWellInput").moveTo("postGame");
   cp5.getController("struggledInput").moveTo("postGame");
   cp5.getController("cantInput").moveTo("postGame");
   cp5.getController("submit").moveTo("postGame");
 
-  /*cp5.getController("1").moveTo("sandstorm");
-   cp5.getController("2").moveTo("sandstorm");
-   cp5.getController("3").moveTo("sandstorm");
-   cp5.getController("3").moveTo("sandstorm");
-   cp5.getController("4").moveTo("sandstorm");
-   cp5.getController("5").moveTo("sandstorm");
-   cp5.getController("6").moveTo("sandstorm");*/
+
   cp5.getGroup("rocket1CargoSand").moveTo("sandstorm");
   cp5.getGroup("rocket1HatchSand").moveTo("sandstorm");
   cp5.getGroup("rocket2CargoSand").moveTo("sandstorm");
@@ -799,7 +790,6 @@ void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
-  //  test.setProgress((test.getProgress() + 0.01) % 1);
   matchId = str(matchNum);
 
   //UI Elements
@@ -877,16 +867,9 @@ void draw () {
 abstract class A implements ControlListener {
 
   public void controlEvent(ControlEvent theEvent) {
-    if (theEvent.isTab() || theEvent.isFrom("moveToTele")) 
+    if (theEvent.isTab()) 
     {
-      if (theEvent.isTab())
-      {
-        activeTab = theEvent.getTab().getId();
-      } else if (theEvent.isFrom("moveToTele"))
-      {
-        activeTab = 2;
-        //cp5.getTab("teleop").bringToFront("teleop");
-      }
+      activeTab = theEvent.getTab().getId();
 
       if (activeTab == 1) {
         cp5.getGroup("techFoul").moveTo("sandstorm");
@@ -1078,7 +1061,13 @@ abstract class A implements ControlListener {
 
     //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
 
-    if (theEvent.isTab() || theEvent.isFrom("moveToTele")) {
+    if (
+    theEvent.isFrom(cp5.getGroup("rocket1HatchSand")) ||
+    theEvent.isFrom(cp5.getGroup("rocket1CargoSand")) ||
+    theEvent.isFrom(cp5.getGroup("rocket2HatchSand")) ||
+    theEvent.isFrom(cp5.getGroup("rocket2CargoSand")) || 
+    theEvent.isFrom(cp5.getGroup("shipHatchSand")) || 
+    theEvent.isFrom(cp5.getGroup("shipCargoSand"))) {
       //Rocket 1 cargo
       if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) == 1)
       {
@@ -1086,7 +1075,7 @@ abstract class A implements ControlListener {
       } else {
         rocket1CargoTele.deactivate(0);
       }
-
+      
       if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(1) == 1)
       {
         rocket1CargoTele.activate(1);
@@ -1369,9 +1358,7 @@ abstract class A implements ControlListener {
   }
 }
 
-/*void toggleAutoClear(boolean theFlag) {
- myTextfield.setAutoClear(theFlag);
- }*/
+
 
 void toggleDarkMode(boolean darkMode) {
   if (!darkMode) {
@@ -1387,7 +1374,6 @@ void submit() {
   didWellText.submit();
   struggledText.submit();
   cantText.submit();
-  addMatch();
   hatchRocketLow = hatchRocketLow - stormRocketHatchLow;
   cargoRocketLow = cargoRocketLow - stormCargoRocketLow;
   hatchCargoLow = hatchCargoLow - stormCargoHatchLow;
@@ -1398,7 +1384,10 @@ void submit() {
 
   hatchHigh = hatchHigh - stormHatchHigh;
   cargoHigh = cargoHigh - stormCargoHigh;
-  saveJSON();
+  
+  saveJSON(); // Saves to JSON locally or externally
+  
+  addMatch(); //Duh
   resetAll();
 }
 
@@ -1529,9 +1518,20 @@ void saveJSON() {
   match.setBoolean("Flipped Over", flippedOver);
 
   values1.setJSONObject(i-1, match);
-  saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-  saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-  saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+
+  if (saveExternal)//External save
+  {
+    saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+  }
+
+  if (!saveExternal)//Local save
+  {
+    saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+  }
 }
 
 
