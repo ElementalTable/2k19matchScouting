@@ -11,14 +11,7 @@ ControlP5 cp5;
 //#FFFFFF White (text color/base color)
 
 /*TODO:
- * Make Cargo Circles
- * Make Hatches bigger than cargo
- * Use same visual language between rocket and cargo ship
- * Set up scoring panel as a representation of the field
- * Change box color between sandstorm, and put letter in box/circle (s for sandstorm and t for teleop)
- * Make fouls/tech fouls and penalty switches smaller
- * Put numbers on the left side of the button.
- * Change names on rocket to near rocket and far rocket
+ * Put numbers on the left side of the buttons.
  */
 
 match[] matches;
@@ -55,6 +48,10 @@ boolean disabled = false;
 boolean flippedOver = false;
 boolean assist = false;
 boolean submitable = false; 
+
+//Error suff
+boolean error = false;
+String errorCode = "";
 
 CheckBox rocket1CargoSand;
 CheckBox rocket1HatchSand;
@@ -717,18 +714,18 @@ void setup () {
     .addItem("habOneE", 1)
     .addItem("habTwoE", 2)
     .addItem("habThreeE", 3)
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("endPos");
   cp5.getController("habZeroE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("habZeroE").setLabel("No Climb");
   cp5.getController("habOneE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOneE").setLabel("1");
+  cp5.getController("habOneE").setLabel("Low Hab");
   cp5.getController("habTwoE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwoE").setLabel("2");
+  cp5.getController("habTwoE").setLabel("Mid Hab");
   cp5.getController("habThreeE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habThreeE").setLabel("3");
+  cp5.getController("habThreeE").setLabel("High Hab");
 
   assistClimb = cp5.addToggle("assist", false)
     .setLabel("Did They Assist")
@@ -774,8 +771,8 @@ void setup () {
     .addItem("five", 5)
     .addItem("six", 6)
     .getCaptionLabel()
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   teamInp = cp5.addTextfield("teamInp")
     .setColorValue(color(white))
@@ -784,7 +781,6 @@ void setup () {
     .setFont(largeFont)
     .setLabel("")
     ;
-
 
   cp5.getGroup("scoutNum");
   cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
@@ -799,11 +795,11 @@ void setup () {
   cp5.getController("five").setLabel("5");
   cp5.getController("six").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("six").setLabel("6");
-
-
+  
+  
 
   startPosBut = cp5.addRadioButton("startPos")
-    .setPosition(xLocation*11.3, yLocation*3.7)
+    .setPosition(xLocation*11, yLocation*3.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/10))
@@ -813,14 +809,15 @@ void setup () {
     .setColorBackground(color(unactiveBut))
     .addItem("habOne", 1)
     .addItem("habTwo", 2)
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("starPos");
   cp5.getController("habOne").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOne").setLabel("1");
+  cp5.getController("habOne").setLabel("Low Hab");
   cp5.getController("habTwo").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwo").setLabel("2");
+  cp5.getController("habTwo").setLabel("Mid Hab");
+
 
 
   cp5.addBang("resetBut", (xLocation), (yLocation*5), 40, 40)
@@ -835,6 +832,7 @@ void setup () {
     ;
 
 
+
   //---------------------------------------------------------------------Save Location Button-------------------------------------------------------------
   saveLocationBut = cp5.addRadioButton("saveLocationBut")
     .setPosition(xLocation, yLocation*3)
@@ -847,7 +845,8 @@ void setup () {
     .setColorBackground(color(unactiveBut))
     .addItem("external", 1)
     .addItem("local", 2)
-    .setFont(font);
+    .setFont(font)
+    ;
 
   cp5.getController("external").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("external").setLabel("Save External");
@@ -914,6 +913,9 @@ void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
+  textSize(30);
+  text(errorCode, xLocation, yLocation*9);
+  println(errorCode);
   matchId = str(matchNum);
   //UI Elements
   if (activeTab == 0) {
@@ -979,10 +981,10 @@ void draw () {
   if (endPos != -1 && startPos != -1 && scoutNum != -1)
   {
     submitable = true;
-  }
-  else
+  } else
   {
     submitable = false;
+    errorCode = "Submit Failed: Start/End Postion or Scout Number not selected";
   }
 }
 
@@ -1149,7 +1151,7 @@ abstract class A implements ControlListener {
         startPos = 1;
       } else if (theEvent.getArrayValue(1) == 1) {
         startPos = 2;
-      } else{
+      } else {
         startPos = -1;
       }
     }
@@ -1164,7 +1166,7 @@ abstract class A implements ControlListener {
         endPos = 2;
       } else if (theEvent.getArrayValue(3) == 1) {
         endPos = 3;
-      }else{
+      } else {
         endPos = -1;
       }
     }
@@ -1193,15 +1195,14 @@ abstract class A implements ControlListener {
         scoutNum = 5;
       } else if (theEvent.getArrayValue(5) == 1) {
         scoutNum = 6;
-      }else{
+      } else {
         scoutNum = -1;
       }
-      
-      if(scoutNum != -1)
+
+      if (scoutNum != -1)
       {
         setTeamNumber(scoutNum, matchNum);
       }
-      
     }
 
     //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
@@ -1389,8 +1390,7 @@ void submit() {
 
     addMatch(); 
     resetAll();
-  }
-  else{
+  } else {
     println("Can't Submit");
   }
 }
@@ -1436,7 +1436,9 @@ void resetAll()
 }
 
 void addMatch() {
-  matchNum++;
+  if (matchNum<70) {
+    matchNum++;
+  }
   setTeamNumber(scoutNum, matchNum);
   teamInp.setText(teamId);
 }
@@ -1544,16 +1546,28 @@ void saveJSON() {
 
   if (saveExternal)//External and local save
   {
-    //EXTERNAL
-    saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-
-    //LOCAL
-    saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      // TESTING THE FOLLOWING CODE NOW; This should catch a bad external save, but testing with the network drive online is needed.  
+    boolean exist;
+    File networkTest = new File("Z://");
+    exist = networkTest.exists();
+    println(networkTest);
+    if (exist) {
+      //EXTERNAL
+      saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      print("External Save");
+    } else {
+      //LOCAL
+      saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      println("External save failed, data saved locally.");
+      errorCode = "External save failed, data saved locally.";
+    }
+    //END TEST
   }
+
 
   if (!saveExternal)//Local save
   {
@@ -1561,6 +1575,7 @@ void saveJSON() {
     saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
     saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
     saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    println("Local Save");
   }
 }
 
