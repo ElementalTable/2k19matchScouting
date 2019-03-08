@@ -53,6 +53,13 @@ boolean submitable = false;
 boolean error = false;
 String errorCode = "";
 
+boolean driveExistZ;
+boolean driveExistX;
+boolean driveExistY;
+File networkTestZ = new File("Z://");
+File networkTestX = new File("X://");
+File networkTestY = new File("Y://");
+
 CheckBox rocket1CargoSand;
 CheckBox rocket1HatchSand;
 CheckBox rocket1CargoTele;
@@ -913,9 +920,9 @@ void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
-  textSize(30);
-  text(errorCode, xLocation, yLocation*9);
-  println(errorCode);
+  textSize(18);
+  text(errorCode, xLocation*.2, yLocation*7.3);
+  //println(errorCode);
   matchId = str(matchNum);
   //UI Elements
   if (activeTab == 0) {
@@ -981,10 +988,11 @@ void draw () {
   if (endPos != -1 && startPos != -1 && scoutNum != -1)
   {
     submitable = true;
-  } else
+    errorCode = "";
+  } else if (endPos == -1 || startPos == -1 || scoutNum == -1)
   {
     submitable = false;
-    errorCode = "Submit Failed: Start/End Postion or Scout Number not selected";
+    errorCode = "Submit Failed: Start/End Postion/Scout Number not selected";
   }
 }
 
@@ -1402,6 +1410,7 @@ void resetBut()
 
 void resetAll()
 {
+  errorCode = "";
   endPos = -1;
   startPos = -1;
   submitable = false;
@@ -1545,13 +1554,11 @@ void saveJSON() {
   values1.setJSONObject(i-1, match);
 
   if (saveExternal)//External and local save
-  {
-      // TESTING THE FOLLOWING CODE NOW; This should catch a bad external save, but testing with the network drive online is needed.  
-    boolean exist;
-    File networkTest = new File("Z://");
-    exist = networkTest.exists();
-    println(networkTest);
-    if (exist) {
+  { 
+    driveExistZ = networkTestZ.exists();
+    driveExistX = networkTestX.exists();
+    driveExistY = networkTestY.exists();
+    if (driveExistZ && driveExistX && driveExistY) {
       //EXTERNAL
       saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
       saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
