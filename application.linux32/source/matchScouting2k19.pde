@@ -10,12 +10,12 @@ ControlP5 cp5;
 //#28061C Eerie Black (Unactivated Button )
 //#FFFFFF White (text color/base color)
 
-match[] matches;
 
+match[] matches;
 //read variables
 String teamId = "0000";
-String alliance;
-int startPos;//
+String alliance = "Alliance";
+int startPos = -1;//
 int stormRocketHatchLow;//
 int stormCargoHatchLow;//
 int stormHatchMid;//
@@ -32,17 +32,59 @@ int cargoRocketLow;//
 int cargoCargoLow;//
 int cargoMid;//
 int cargoHigh;//
-int techFouls;//
-int fouls;//
-int endPos;//
-int scoutNum;//
-String cantDo;//
-String struggledWith;//
-String didWell;//
-boolean redCard;
-boolean yellowCard;
-boolean disabled;
-boolean flippedOver;
+int techFouls = 0;//
+int fouls = 0;//
+int endPos = -1;//
+int scoutNum = -1;//
+String cantDo = "Empty Field";//
+String struggledWith = "Empty Field";//
+String didWell = "Empty Field";//
+boolean redCard = false;
+boolean yellowCard = false;
+boolean disabled = false;
+boolean flippedOver = false;
+boolean assist = false;
+boolean submitable = false; 
+
+//Error suff
+boolean error = false;
+String errorCode = "";
+
+boolean driveExistZ;
+boolean driveExistX;
+boolean driveExistY;
+File networkTestZ = new File("Z://");
+File networkTestX = new File("X://");
+File networkTestY = new File("Y://");
+
+CheckBox rocket1CargoSand;
+CheckBox rocket1HatchSand;
+CheckBox rocket1CargoTele;
+CheckBox rocket1HatchTele;
+
+CheckBox rocket2CargoSand;
+CheckBox rocket2HatchSand;
+CheckBox rocket2CargoTele;
+CheckBox rocket2HatchTele;
+
+CheckBox shipCargoSand;
+CheckBox shipHatchSand;
+CheckBox shipCargoTele;
+CheckBox shipHatchTele;
+
+Toggle yellowCardTog;
+Toggle redCardTog;
+Toggle disabledTog;
+Toggle flippedOverTog;
+Toggle assistClimb;
+
+RadioButton foulsBut;
+RadioButton techFoulsBut;
+RadioButton startPosBut;
+RadioButton endPosBut;
+
+RadioButton saveLocationBut;
+boolean saveExternal = false; //true = save to pi : false = save locally
 
 //Color Vars
 int is = 5;
@@ -59,7 +101,6 @@ int eeB = 40;
 int la = 6;
 int ck = 28;
 int white = 255;
-
 color backgroundCl;
 color textCl;
 color unactiveBut;
@@ -73,8 +114,8 @@ int xLocation = 100;
 int yLocation = 100;
 int xSpacing = 105;
 int ySpacing = 30;
-int sizeing = 100;
-int sizeingPt2 = 20;
+int sizeing = 110;
+int sizeingPt2 = 30;
 int fontSize = 24;
 /*GUIController c;
  IFRadioController rc;
@@ -93,8 +134,18 @@ String textValue = "";
 Textfield cantText;
 Textfield struggledText;
 Textfield didWellText;
-Textfield match;
+Textfield teamInp;
 String matchId = str(matchNum);
+
+PImage hatchUnactiveImg;
+PImage hatchActiveSandImg;
+PImage hatchActiveTeleImg;
+PImage cargoUnactiveImg;
+PImage cargoActiveSandImg;
+PImage cargoActiveTeleImg;
+
+
+
 void setup () {
   loadJSON();
   B b = new B();
@@ -102,6 +153,19 @@ void setup () {
   PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
   ControlFont font = new ControlFont(pfont, 15);
   ControlFont largeFont = new ControlFont(pfont, 40);
+
+  hatchUnactiveImg = loadImage("../data/images/Inactive/hatchUnactive.jpg");
+  hatchActiveSandImg = loadImage("../data/images/Active/hatchActiveSand.jpg");
+  hatchActiveTeleImg = loadImage("../data/images/Active/hatchActiveTele.jpg"); 
+  cargoUnactiveImg = loadImage("../data/images/Inactive/cargoUnactive.png");
+  cargoActiveSandImg = loadImage("../data/images/Active/cargoActiveSand.png");
+  cargoActiveTeleImg = loadImage("../data/images/Active/cargoActiveTele.png"); 
+  hatchUnactiveImg.resize(sizeingPt2+20, sizeingPt2+20);
+  hatchActiveSandImg.resize(sizeingPt2+20, sizeingPt2+20);
+  hatchActiveTeleImg.resize(sizeingPt2+20, sizeingPt2+20);
+  cargoUnactiveImg.resize(sizeingPt2+10, sizeingPt2+10);
+  cargoActiveSandImg.resize(sizeingPt2+10, sizeingPt2+10);
+  cargoActiveTeleImg.resize(sizeingPt2+10, sizeingPt2+10);
 
   //c = new GUIController(this);
   //rc = new IFRadioController("Mode Selector");
@@ -116,7 +180,7 @@ void setup () {
   //c4 = new IFCheckBox("Test4", 200, 80);
   //d1 = new IFButton("this is a button", 200, 100);
 
- JSONArray values;
+  JSONArray values;
 
   cp5 = new ControlP5 (this);
 
@@ -128,7 +192,7 @@ void setup () {
   activeBut = color(mi, dGre, enn);
 
   //cp5.getTab("default").setColorBackground(color(eeB, la, ck));
-  cp5.getTab("default")
+  cp5.addTab("default")
     .activateEvent(true)
     .setId(0)
     .setLabel("Welcome")
@@ -146,7 +210,7 @@ void setup () {
     //.setColor(color(eeB, la, ck))
     ;
 
-  cp5.getTab("sandstorm")
+  cp5.addTab("sandstorm")
     .activateEvent(true)
     .setId(1)
     .setLabel("Sandstorm")
@@ -162,7 +226,7 @@ void setup () {
     ;
 
 
-  cp5.getTab("teleop")
+  cp5.addTab("teleop")
     .activateEvent(true)
     .setId(2)
     .setLabel("Teleop")
@@ -177,7 +241,7 @@ void setup () {
     .toUpperCase(false)
     ;
 
-  cp5.getTab("postGame")
+  cp5.addTab("postGame")
     .activateEvent(true)
     .setId(3)
     .setLabel("Post Game")
@@ -191,7 +255,7 @@ void setup () {
     .setSize(fontSize)
     .toUpperCase(false) //they are good at _____ they struggle with ___ they can't do ______
     ;
-  cp5.getTab("settings")
+  cp5.addTab("settings")
     .activateEvent(true)
     .setId(4)
     .setLabel("Settings")
@@ -209,12 +273,13 @@ void setup () {
   cp5.addListener(b);
   //---------------------------------------------------------------------------ROCKET1---------------------------------------------------------------------------------
   //Sandstorm Rocket1 Checkboxes
-  cp5.addCheckBox("rocket1CargoSand")
-    .setPosition(xLocation*1.48, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+
+  rocket1CargoSand = cp5.addCheckBox("rocket1CargoSand")
+    .setPosition(xLocation*1.68, yLocation*2.3)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(2)
-    .setSpacingColumn(ySpacing)
-    .setSpacingRow(xSpacing/5)
+    .setSpacingColumn(xSpacing/2+10)
+    .setSpacingRow(ySpacing*2-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -227,12 +292,13 @@ void setup () {
     .hideLabels()
     ;
 
-  cp5.addCheckBox("rocket1HatchSand")
-    .setPosition(xLocation, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+
+  rocket1HatchSand = cp5.addCheckBox("rocket1HatchSand")
+    .setPosition(xLocation*.95, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(2)
-    .setSpacingColumn(xSpacing+(xSpacing/5))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing*2-20)
+    .setSpacingRow(ySpacing*2-20)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -244,13 +310,14 @@ void setup () {
     .addItem("rocketHatchCargoLow1", 6)
     .hideLabels()
     ;
+
   //Teleop Rocket1 Checkboxes
-  cp5.addCheckBox("rocket1CargoTele")
-    .setPosition(xLocation*1.48, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket1CargoTele = cp5.addCheckBox("rocket1CargoTele")
+    .setPosition(xLocation*1.68, yLocation*2.3)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(2)
-    .setSpacingColumn(ySpacing)
-    .setSpacingRow(xSpacing/5)
+    .setSpacingColumn(xSpacing/2+10)
+    .setSpacingRow(ySpacing*2-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -263,12 +330,12 @@ void setup () {
     .hideLabels()
     ;
 
-  cp5.addCheckBox("rocket1HatchTele")
-    .setPosition(xLocation, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket1HatchTele = cp5.addCheckBox("rocket1HatchTele")
+    .setPosition(xLocation*.95, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(2)
-    .setSpacingColumn(xSpacing+(xSpacing/5))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing*2-20)
+    .setSpacingRow(ySpacing*2-20)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -283,12 +350,12 @@ void setup () {
 
   //-------------------------------------------------------------------------ROCKET2-----------------------------------------------------------------------------------------
   //Rocket 2 Cargo Sandstorm
-  cp5.addCheckBox("rocket2CargoSand")
-    .setPosition(xLocation*3.98, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket2CargoSand = cp5.addCheckBox("rocket2CargoSand")
+    .setPosition(xLocation*10.43, yLocation*2.3)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(2)
-    .setSpacingColumn(ySpacing)
-    .setSpacingRow(xSpacing/5)
+    .setSpacingColumn(xSpacing/2+10)
+    .setSpacingRow(ySpacing*2-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -301,12 +368,12 @@ void setup () {
     .hideLabels()
     ;
 
-  cp5.addCheckBox("rocket2HatchSand")
-    .setPosition(xLocation*3.5, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket2HatchSand = cp5.addCheckBox("rocket2HatchSand")
+    .setPosition(xLocation*9.7, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(2)
-    .setSpacingColumn(xSpacing+(xSpacing/5))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing*2-20)
+    .setSpacingRow(ySpacing*2-20)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -318,13 +385,14 @@ void setup () {
     .addItem("rocket2HatchCargoLow1", 6)
     .hideLabels()
     ;
+
   //Rocket 2 Teleop checkboxes
-  cp5.addCheckBox("rocket2CargoTele")
-    .setPosition(xLocation*3.98, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket2CargoTele = cp5.addCheckBox("rocket2CargoTele")
+    .setPosition(xLocation*10.43, yLocation*2.3)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(2)
-    .setSpacingColumn(ySpacing)
-    .setSpacingRow(xSpacing/5)
+    .setSpacingColumn(xSpacing/2+10)
+    .setSpacingRow(ySpacing*2-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -337,12 +405,12 @@ void setup () {
     .hideLabels()
     ;
 
-  cp5.addCheckBox("rocket2HatchTele")
-    .setPosition(xLocation*3.5, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  rocket2HatchTele = cp5.addCheckBox("rocket2HatchTele")
+    .setPosition(xLocation*9.7, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(2)
-    .setSpacingColumn(xSpacing+(xSpacing/5))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing*2-20)
+    .setSpacingRow(ySpacing*2-20)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -359,12 +427,12 @@ void setup () {
 
   //---------------------------------------------------------------------CARGOSHIP-------------------------------------------------------------
   //Ship Cargo Teleop
-  cp5.addCheckBox("shipCargoTele")
-    .setPosition(xLocation*10, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  shipCargoTele = cp5.addCheckBox("shipCargoTele")
+    .setPosition(xLocation*5.35, yLocation*2.95)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(4)
-    .setSpacingColumn(xSpacing/5+(xSpacing/10))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing/2-10)
+    .setSpacingRow(ySpacing*1 - 5)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -379,13 +447,14 @@ void setup () {
     .hideLabels()
     ;
 
+
   //Ship Hatch Teleop
-  cp5.addCheckBox("shipHatchTele")
-    .setPosition(xLocation*7, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  shipHatchTele = cp5.addCheckBox("shipHatchTele")
+    .setPosition(xLocation*5.3, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(4)
-    .setSpacingColumn(xSpacing/5+(xSpacing/10))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing/2-20)
+    .setSpacingRow(ySpacing*5-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -403,12 +472,12 @@ void setup () {
 
 
   //Ship Cargo Sandstorm
-  cp5.addCheckBox("shipCargoSand")
-    .setPosition(xLocation*10, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  shipCargoSand = cp5.addCheckBox("shipCargoSand")
+    .setPosition(xLocation*5.35, yLocation*2.95)
+    .setSize(sizeingPt2+10, sizeingPt2+10)
     .setItemsPerRow(4)
-    .setSpacingColumn(xSpacing/5+(xSpacing/10))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing/2-10)
+    .setSpacingRow(ySpacing*1 -5)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -424,12 +493,12 @@ void setup () {
     ;
 
   //Ship Hatch Sandstorm
-  cp5.addCheckBox("shipHatchSand")
-    .setPosition(xLocation*7, yLocation*2)
-    .setSize(sizeingPt2, sizeingPt2)
+  shipHatchSand = cp5.addCheckBox("shipHatchSand")
+    .setPosition(xLocation*5.3, yLocation*2.3)
+    .setSize(sizeingPt2+20, sizeingPt2+20)
     .setItemsPerRow(4)
-    .setSpacingColumn(xSpacing/5+(xSpacing/10))
-    .setSpacingRow(ySpacing)
+    .setSpacingColumn(xSpacing/2-20)
+    .setSpacingRow(ySpacing*5-10)
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
@@ -444,12 +513,13 @@ void setup () {
     .hideLabels()
     ;
 
+
   //----------------------------------------------------------------------FOULS/TECHFOULS---------------------------------------------------------------------------------------
-  //Storm tech fouls
-  cp5.addRadioButton("techFoul")
-    .setPosition(xLocation, yLocation*4.7)
+  //tech fouls
+  techFoulsBut = cp5.addRadioButton("techFoul")
+    .setPosition(xLocation*2.2, yLocation*6)
     .setSize(sizeingPt2, sizeingPt2)
-    .setItemsPerRow(1)
+    .setItemsPerRow(5)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
     .setSpacingRow(ySpacing)
     .activateEvent(true)
@@ -460,20 +530,24 @@ void setup () {
     .addItem("twoTech", 3)
     .addItem("threeTech", 4)
     .addItem("greaterThreeTech", 5)
-    .getCaptionLabel()
     .setFont(font);
   ;
 
   cp5.getGroup("techFoul");
-  cp5.getController("zeroTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("zeroTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("zeroTech").setLabel("0");
-  cp5.getController("oneTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("oneTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("oneTech").setLabel("1");
-  cp5.getController("twoTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("twoTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("twoTech").setLabel("2");
-  cp5.getController("threeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("threeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("threeTech").setLabel("3");
-  cp5.getController("greaterThreeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("greaterThreeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("greaterThreeTech").setLabel(">3");
 
 
@@ -481,11 +555,11 @@ void setup () {
 
 
 
-  //Storm fouls
-  cp5.addRadioButton("foul")
-    .setPosition(xLocation*4, yLocation*4.7)
+  //fouls
+  foulsBut = cp5.addRadioButton("foul")
+    .setPosition(xLocation*2.2, yLocation*6.7)
     .setSize(sizeingPt2, sizeingPt2)
-    .setItemsPerRow(1)
+    .setItemsPerRow(6)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
     .setSpacingRow(ySpacing)
     .activateEvent(true)
@@ -496,49 +570,33 @@ void setup () {
     .addItem("twoFoul", 3)
     .addItem("threeFoul", 4)
     .addItem("fourFoul", 5)
-    .addItem("moreThanFourFoul", 1)
+    .addItem("moreThanFourFoul", 6)
     .setFont(font)
     ;
   cp5.getGroup("foul");
-  cp5.getController("zeroFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("zeroFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("zeroFoul").setLabel("0");
-  cp5.getController("oneFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("oneFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("oneFoul").setLabel("1");
-  cp5.getController("twoFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("twoFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("twoFoul").setLabel("2");
-  cp5.getController("threeFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("threeFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("threeFoul").setLabel("3");
-  cp5.getController("fourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("fourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("fourFoul").setLabel("4");
-  cp5.getController("moreThanFourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("moreThanFourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("moreThanFourFoul").setLabel(">4");
 
 
-
-
-
-  //cp5.getGroup("stormCargoHigh").setValue(1);
-  //cp5.getGroup("stormCargoMid").setValue(2);
-  //cp5.getGroup("rocketStormCargoLow").setValue(3);
-
-  //look = new IFLookAndFeel(this, IFLookAndFeel.DEFAULT);
-  //look.baseColor = color(18,255,3);
-  // look.highlightColor = color (18, 255, 3);
-  //c.add(b1);
-  //c.add(b2);
-  //c.add(b3);
-  //c.add(b4);
-  //c.add(test);
-  //c.add(c1);
-  //c.add(c2);
-  //c.add(c3);
-  //c.add(c4);
-  //c.add(d1);
-  //c.setLookAndFeel(look);
-
   //-----------------------------------------------------------------------------------Penalty Switches-------------------------------------------------------------------
-  Toggle yellowCard = cp5.addToggle("yellowCard")
-    .setPosition(xLocation*8, yLocation*4.7)
+  yellowCardTog = cp5.addToggle("yellowCard")
+    .setPosition(xLocation*6.4, yLocation*6.1)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -548,13 +606,13 @@ void setup () {
 
   cp5.getController("yellowCard").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("yellowCard").setLabel("Yellow Card");
-  yellowCard.getCaptionLabel().getStyle().marginLeft = 85;
-  yellowCard.getCaptionLabel().getStyle().marginTop = -27;
+  yellowCardTog.getCaptionLabel().getStyle().marginLeft = 85;
+  yellowCardTog.getCaptionLabel().getStyle().marginTop = -27;
 
 
 
-  Toggle redCard = cp5.addToggle("redCard")
-    .setPosition(xLocation*8, yLocation*5.2)
+  redCardTog = cp5.addToggle("redCard")
+    .setPosition(xLocation*6.4, yLocation*6.7)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -564,15 +622,15 @@ void setup () {
 
   cp5.getController("redCard").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("redCard").setLabel("Red Card");
-  redCard.getCaptionLabel().getStyle().marginLeft = 85;
-  redCard.getCaptionLabel().getStyle().marginTop = -27;
+  redCardTog.getCaptionLabel().getStyle().marginLeft = 85;
+  redCardTog.getCaptionLabel().getStyle().marginTop = -27;
 
 
 
 
 
-  Toggle disabled = cp5.addToggle("disabled")
-    .setPosition(xLocation*8, yLocation*5.7)
+  disabledTog = cp5.addToggle("disabled")
+    .setPosition(xLocation*8.5, yLocation*6.1)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -582,15 +640,15 @@ void setup () {
 
   cp5.getController("disabled").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("disabled").setLabel("Disabled");
-  disabled.getCaptionLabel().getStyle().marginLeft = 85;
-  disabled.getCaptionLabel().getStyle().marginTop = -27;
+  disabledTog.getCaptionLabel().getStyle().marginLeft = 85;
+  disabledTog.getCaptionLabel().getStyle().marginTop = -27;
 
 
 
 
 
-  Toggle flippedOver = cp5.addToggle("flippedOver")
-    .setPosition(xLocation*8, yLocation*6.2)
+  flippedOverTog = cp5.addToggle("flippedOver")
+    .setPosition(xLocation*8.5, yLocation*6.7)
     .setSize(70, 20)
     .setValue(false)
     .setFont(font)
@@ -600,15 +658,15 @@ void setup () {
 
   cp5.getController("flippedOver").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("flippedOver").setLabel("Flipped Over");
-  flippedOver.getCaptionLabel().getStyle().marginLeft = 85;
-  flippedOver.getCaptionLabel().getStyle().marginTop = -27;
+  flippedOverTog.getCaptionLabel().getStyle().marginLeft = 85;
+  flippedOverTog.getCaptionLabel().getStyle().marginTop = -27;
 
 
   //----------------------------------------------------------------------------------Dark Mode----------------------------------------------------------------------------
   cp5.addToggle("toggleDarkMode", false)
     .setLabel("Dark Mode")
-    .setColorActive(color(activeBut))
-    .setColorBackground(color(unactiveBut))
+    .setColorActive(color(unactiveBut))
+    .setColorBackground(color(activeBut))
     .setPosition(xLocation, yLocation)
     .setSize(sizeing*2, sizeingPt2*2)
     .setValue(0)
@@ -647,8 +705,8 @@ void setup () {
     ;
 
 
-cp5.addRadioButton("endPos")
-    .setPosition(xLocation*11.8, yLocation)
+  endPosBut = cp5.addRadioButton("endPos")
+    .setPosition(xLocation*11.8, yLocation*.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -656,20 +714,32 @@ cp5.addRadioButton("endPos")
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
+    .addItem("habZeroE", 0)
     .addItem("habOneE", 1)
     .addItem("habTwoE", 2)
     .addItem("habThreeE", 3)
-    .getCaptionLabel()
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("endPos");
+  cp5.getController("habZeroE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habZeroE").setLabel("No Climb");
   cp5.getController("habOneE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOneE").setLabel("1");
+  cp5.getController("habOneE").setLabel("Low Hab");
   cp5.getController("habTwoE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwoE").setLabel("2");
+  cp5.getController("habTwoE").setLabel("Mid Hab");
   cp5.getController("habThreeE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habThreeE").setLabel("3");
+  cp5.getController("habThreeE").setLabel("High Hab");
+
+  assistClimb = cp5.addToggle("assist", false)
+    .setLabel("Did They Assist")
+    .setColorActive(color(activeBut))
+    .setColorBackground(color(unactiveBut))
+    .setPosition(xLocation, yLocation*1.5)
+    .setSize(sizeing+70, sizeingPt2+20)
+    .setValue(0)
+    ;
+  assistClimb.getCaptionLabel().align(CENTER, CENTER).toUpperCase(false).setFont(pfont).setSize(fontSize);
 
   //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
   cp5.addBang("addMatch", (xLocation*7+13), (yLocation*6), 40, 40)
@@ -705,11 +775,16 @@ cp5.addRadioButton("endPos")
     .addItem("five", 5)
     .addItem("six", 6)
     .getCaptionLabel()
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
-
-
+  teamInp = cp5.addTextfield("teamInp")
+    .setColorValue(color(white))
+    .setPosition(xLocation*6, yLocation*.7)
+    .setSize(sizeing+50, sizeingPt2*2)
+    .setFont(largeFont)
+    .setLabel("")
+    ;
 
   cp5.getGroup("scoutNum");
   cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
@@ -727,8 +802,8 @@ cp5.addRadioButton("endPos")
 
 
 
-  cp5.addRadioButton("startPos")
-    .setPosition(xLocation*11.5, yLocation*3.7)
+  startPosBut = cp5.addRadioButton("startPos")
+    .setPosition(xLocation*11, yLocation*3.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/10))
@@ -738,39 +813,73 @@ cp5.addRadioButton("endPos")
     .setColorBackground(color(unactiveBut))
     .addItem("habOne", 1)
     .addItem("habTwo", 2)
-    .getCaptionLabel()
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("starPos");
   cp5.getController("habOne").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOne").setLabel("1");
+  cp5.getController("habOne").setLabel("Low Hab");
   cp5.getController("habTwo").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwo").setLabel("2");
+  cp5.getController("habTwo").setLabel("Mid Hab");
 
 
 
-  //------------------------------------------------------------------------------Move to correct tabs------------------------------------------
+  cp5.addBang("resetBut", (xLocation), (yLocation*5), 40, 40)
+    .setLabel("Reset")
+    .setSize(sizeing, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
+
+  cp5.addBang("reconnectDrivesBut", (xLocation*3), (yLocation*5), 40, 40)
+    .setLabel("Reconnect Drives")
+    .setSize(sizeing+60, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
 
 
 
-  //cp5.getController("sliderValue").moveTo("sneeze");
-  //cp5.getController("slider").moveTo("sneeze");
-  //cp5.getController("button").moveTo("sneeze");
-  //cp5.getController("buttonValue").moveTo("sneeze");
+  //---------------------------------------------------------------------Save Location Button-------------------------------------------------------------
+  saveLocationBut = cp5.addRadioButton("saveLocationBut")
+    .setPosition(xLocation, yLocation*3)
+    .setSize(sizeing, sizeingPt2)
+    .setItemsPerRow(1)
+    .setSpacingColumn(xSpacing/5+(xSpacing/10))
+    .setSpacingRow(ySpacing)
+    .activateEvent(true)
+    .setColorActive(activeBut)
+    .setColorBackground(color(unactiveBut))
+    .addItem("external", 1)
+    .addItem("local", 2)
+    .setFont(font)
+    ;
+
+  cp5.getController("external").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("external").setLabel("Save External");
+  cp5.getController("local").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("local").setLabel("Save Local");
+
+  saveLocationBut.activate(0);
+
+  //---------------------------------------------------------------------Move to correct tabs-----------------------------------------------------------
+
   cp5.getGroup("endPos").moveTo("postGame");
   cp5.getController("didWellInput").moveTo("postGame");
   cp5.getController("struggledInput").moveTo("postGame");
   cp5.getController("cantInput").moveTo("postGame");
   cp5.getController("submit").moveTo("postGame");
+  cp5.getController("assist").moveTo("postGame");
 
-  /*cp5.getController("1").moveTo("sandstorm");
-   cp5.getController("2").moveTo("sandstorm");
-   cp5.getController("3").moveTo("sandstorm");
-   cp5.getController("3").moveTo("sandstorm");
-   cp5.getController("4").moveTo("sandstorm");
-   cp5.getController("5").moveTo("sandstorm");
-   cp5.getController("6").moveTo("sandstorm");*/
+
   cp5.getGroup("rocket1CargoSand").moveTo("sandstorm");
   cp5.getGroup("rocket1HatchSand").moveTo("sandstorm");
   cp5.getGroup("rocket2CargoSand").moveTo("sandstorm");
@@ -792,6 +901,27 @@ cp5.addRadioButton("endPos")
   cp5.getGroup("shipHatchTele").moveTo("teleop");
 
   cp5.getController("toggleDarkMode").moveTo("settings");
+  cp5.getGroup("saveLocationBut").moveTo("settings");
+  cp5.getController("resetBut").moveTo("settings");
+  cp5.getController("reconnectDrivesBut").moveTo("settings");
+
+  techFoulsBut.activate(0);
+  foulsBut.activate(0);
+
+  rocket1HatchSand.setImage(hatchUnactiveImg);
+  rocket2HatchSand.setImage(hatchUnactiveImg);
+  rocket1CargoSand.setImage(cargoUnactiveImg);
+  rocket2CargoSand.setImage(cargoUnactiveImg);
+  shipHatchSand.setImage(hatchUnactiveImg);
+  shipCargoSand.setImage(cargoUnactiveImg);
+  rocket1HatchTele.setImage(hatchUnactiveImg);
+  rocket2HatchTele.setImage(hatchUnactiveImg);
+  rocket1CargoTele.setImage(cargoUnactiveImg);
+  rocket2CargoTele.setImage(cargoUnactiveImg);
+  shipHatchTele.setImage(hatchUnactiveImg);
+  shipCargoTele.setImage(cargoUnactiveImg);
+
+  teamInp.setText(teamId);
 }
 
 
@@ -799,49 +929,53 @@ void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
-  //  test.setProgress((test.getProgress() + 0.01) % 1);
-
-
+  textSize(18);
+  text(errorCode, xLocation*.2, yLocation*7.3);
+  matchId = str(matchNum);
   //UI Elements
   if (activeTab == 0) {
     cp5.getGroup("scoutNum").setColorLabel(color(textCl));
     cp5.getGroup("startPos").setColorLabel(color(textCl));
     textAlign(CENTER);
     textSize(fontSize+20);
-    text(matchNum, xLocation*6.82, yLocation*6.35);
-    text(teamId, xLocation*6.82, yLocation*1.2);
+    text(matchId, xLocation*6.82, yLocation*6.35);
     textSize(fontSize);
     text("Team Number", xLocation*6.82, yLocation*1.7);
     text("Match Number", xLocation*6.82, yLocation*6.8);
     text("Scout Number", xLocation*1.2, yLocation*2.7);
-    text("Starting Position", xLocation*12.3, yLocation*2.7);
+    text("Starting Position", xLocation*12.2, yLocation*2.7);
+
+    color allianceColor = color(100, 100, 100);
+    if (alliance == "Blue") {
+      allianceColor = color(20, 20, 250);
+    }
+    if (alliance == "Red") {
+      allianceColor = color(250, 20, 20);
+    }
+    fill(allianceColor);
+    rectMode(CENTER);
+    rect(xLocation*6.82, yLocation*2, 110, 35);
+    fill(textCl);
+    text(alliance, xLocation*6.82, yLocation*2.1);
     textAlign(LEFT);
   }
   if (activeTab == 1 || activeTab==2) { //If on Sandstorm or Teleop tabs
-    line(0, (yLocation*3.7), width, (yLocation*3.7)); //Draw horisontal line
+    line(0, (yLocation*5.5), width, (yLocation*5.5)); //Draw horizontal line
     textSize(fontSize);
 
     //Rocket Text
     textSize(fontSize + 5);
-    text("Rockets", xLocation*2.5, yLocation*1);
-    textSize(fontSize);
-    text("Left", xLocation*1.6, yLocation*1.8);
-    text("Right", xLocation*4.05, yLocation*1.8);
-    textSize(fontSize - 3);
-    text("Cargo", xLocation*1.5, yLocation*3.3);
-    text("Cargo", xLocation*4.05, yLocation*3.3);
-    textSize(fontSize);
+    text("Near Rocket", xLocation*1.55, yLocation*1.5);
+    text("Far Rocket", xLocation*10.37, yLocation*1.5);
 
     //Cargo ship text
-    textSize(fontSize + 5);
-    text("Cargo Ship", xLocation*8.6, yLocation*1);
-    textSize(fontSize);
-    text("Hatches", xLocation*7.42, yLocation*1.8);
-    text("Cargo", xLocation*10.52, yLocation*1.8);
+    text("Cargo Ship", xLocation*6, yLocation*1.5);
+
 
     //Fouls text
-    text("Tech Fouls", xLocation*.7, yLocation*4.3);
-    text("Fouls", xLocation*3.9, yLocation*4.3);
+    textSize(fontSize);
+    text("Tech Fouls", xLocation*.5, yLocation*6.2);
+    text("Fouls", xLocation*.9, yLocation*6.9);
 
     cp5.getGroup("techFoul").setColorLabel(color(textCl));
     cp5.getGroup("foul").setColorLabel(color(textCl));
@@ -851,24 +985,37 @@ void draw () {
     cp5.getController("flippedOver").getCaptionLabel().setColor(color(textCl));
   }
 
-
   if (activeTab==3) {
     cp5.getController("didWellInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
     cp5.getGroup("endPos").setColorLabel(color(textCl));
-    text("Ending Position", xLocation*11, yLocation*.7);
+    text("Ending Position", xLocation*11.6, yLocation*.4);
+  }
+
+  if (activeTab == 4) {
+    cp5.getController("external").getCaptionLabel().setColor(color(textCl));
+    cp5.getController("local").getCaptionLabel().setColor(color(textCl));
+  }
+
+  if (endPos != -1 && startPos != -1 && scoutNum != -1)
+  {
+    submitable = true;
+    errorCode = "";
+  } else if (endPos == -1 || startPos == -1 || scoutNum == -1)
+  {
+    submitable = false;
   }
 }
 
 
 abstract class A implements ControlListener {
-  void rocketCargo() {
-    //println(theValue);
-  }
+
   public void controlEvent(ControlEvent theEvent) {
-    if (theEvent.isTab()) {
+    if (theEvent.isTab()) 
+    {
       activeTab = theEvent.getTab().getId();
+
       if (activeTab == 1) {
         cp5.getGroup("techFoul").moveTo("sandstorm");
         cp5.getGroup("foul").moveTo("sandstorm");
@@ -876,9 +1023,7 @@ abstract class A implements ControlListener {
         cp5.getController("yellowCard").moveTo("sandstorm");
         cp5.getController("redCard").moveTo("sandstorm");
         cp5.getController("flippedOver").moveTo("sandstorm");
-      }
-
-      if (activeTab == 2) {
+      } else if (activeTab == 2) {
         cp5.getGroup("techFoul").moveTo("teleop");
         cp5.getGroup("foul").moveTo("teleop");
         cp5.getController("disabled").moveTo("teleop");
@@ -887,15 +1032,353 @@ abstract class A implements ControlListener {
         cp5.getController("flippedOver").moveTo("teleop");
       }
     }
+
+    if (theEvent.isAssignableFrom(Textfield.class)) {
+      didWell = cp5.get("didWellInput").getStringValue();
+      struggledWith = cp5.get("struggledInput").getStringValue();
+      cantDo = cp5.get("cantInput").getStringValue();
+    }
+
+    if (theEvent.isAssignableFrom(CheckBox.class)) {
+
+      stormRocketHatchLow = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(5)
+        + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(5)
+        ;
+      stormCargoHatchLow =
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(0) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(1) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(2) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(3) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(4) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(5) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(6) +
+        (int)cp5.getGroup("shipHatchSand").getArrayValue(7)
+        ;
+
+      stormHatchMid = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(3)
+        + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(3)
+        ;
+
+      stormHatchHigh = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(1)
+        + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(1)
+        ;
+
+
+
+      stormCargoRocketLow = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(5)
+        + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(5)
+        ;
+      stormCargoCargoLow =
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(0) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(1) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(2) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(3) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(4) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(5) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(6) +
+        (int)cp5.getGroup("shipCargoSand").getArrayValue(7)
+        ;
+
+      stormCargoMid = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(3)
+        + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(3)
+        ;
+
+      stormCargoHigh = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(1)
+        + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(1)
+        ;
+
+
+      hatchRocketLow = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(5)
+        + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(5)
+        ;
+      hatchCargoLow =
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(0) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(1) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(2) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(3) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(4) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(5) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(6) +
+        (int)cp5.getGroup("shipHatchTele").getArrayValue(7)
+        ;
+
+      hatchMid = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(3)
+        + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(3)
+        ;
+
+      hatchHigh = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(1)
+        + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(1)
+        ;
+
+
+
+      cargoRocketLow = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(5)
+        + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(5)
+        ;
+      cargoCargoLow =
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(0) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(1) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(2) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(3) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(4) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(5) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(6) +
+        (int)cp5.getGroup("shipCargoTele").getArrayValue(7)
+        ;
+
+      cargoMid = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(3)
+        + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(3)
+        ;
+
+      cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
+        + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
+        ;
+    }
+
+    //-----------------------------------------------------------------Penalties, Fouls, ETC--------------------------------------------------------------------
+    if (theEvent.isFrom("techFoul")) {
+      if (theEvent.getArrayValue(0) == 1) {
+        techFouls = 0;
+      } else if (theEvent.getArrayValue(1) == 1) {
+        techFouls = 1;
+      } else if (theEvent.getArrayValue(2) == 1) {
+        techFouls = 2;
+      } else if (theEvent.getArrayValue(3) == 1) {
+        techFouls = 3;
+      } else if (theEvent.getArrayValue(4) == 1) {
+        techFouls = 4;
+      }
+    }
+
+    if (theEvent.isFrom("foul")) {
+      if (theEvent.getArrayValue(0) == 1) {
+        fouls = 0;
+      } else if (theEvent.getArrayValue(1) == 1) {
+        fouls = 1;
+      } else if (theEvent.getArrayValue(2) == 1) {
+        fouls = 2;
+      } else if (theEvent.getArrayValue(3) == 1) {
+        fouls = 3;
+      } else if (theEvent.getArrayValue(4) == 1) {
+        fouls = 4;
+      } else if (theEvent.getArrayValue(5) == 1) {
+        fouls = 5;
+      }
+    }
+
+    if (theEvent.isFrom("startPos")) {
+      if (theEvent.getArrayValue(0) == 1) {
+        startPos = 1;
+      } else if (theEvent.getArrayValue(1) == 1) {
+        startPos = 2;
+      } else {
+        startPos = -1;
+      }
+    }
+
+
+    if (theEvent.isFrom("endPos")) {
+      if (theEvent.getArrayValue(0) == 1) {
+        endPos = 0;
+      } else if (theEvent.getArrayValue(1) == 1) {
+        endPos = 1;
+      } else if (theEvent.getArrayValue(2) == 1) {
+        endPos = 2;
+      } else if (theEvent.getArrayValue(3) == 1) {
+        endPos = 3;
+      } else {
+        endPos = -1;
+      }
+    }
+
+    if (theEvent.isFrom("saveLocationBut")) {
+      if (theEvent.getArrayValue(0) == 1)
+      {
+        saveExternal = true;
+      } else {
+        saveExternal = false;
+      }
+    }
+
+
+
+    if (theEvent.isFrom("scoutNum")) {
+      if (theEvent.getArrayValue(0) == 1) {
+        scoutNum = 1;
+      } else if (theEvent.getArrayValue(1) == 1) {
+        scoutNum = 2;
+      } else if (theEvent.getArrayValue(2) == 1) {
+        scoutNum = 3;
+      } else if (theEvent.getArrayValue(3) == 1) {
+        scoutNum = 4;
+      } else if (theEvent.getArrayValue(4) == 1) {
+        scoutNum = 5;
+      } else if (theEvent.getArrayValue(5) == 1) {
+        scoutNum = 6;
+      } else {
+        scoutNum = -1;
+      }
+
+      if (scoutNum != -1)
+      {
+        setTeamNumber(scoutNum, matchNum);
+      }
+    }
+
+    //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
+
+    if (theEvent.isFrom(cp5.getGroup("rocket1HatchSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket1CargoSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2HatchSand")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2CargoSand")) || 
+      theEvent.isFrom(cp5.getGroup("shipHatchSand")) || 
+      theEvent.isFrom(cp5.getGroup("shipCargoSand"))) {
+
+      //CHECKBOX SANDBOX-TELE CARRY OVER / SANDSTORM IMAGES
+      for (int i=0; i<6; i++) {
+        if ((int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 1)
+        {
+          rocket1HatchTele.activate(i);
+          rocket1HatchSand.getItem(i).setImage(hatchActiveSandImg);
+          rocket1HatchTele.getItem(i).setImage(hatchActiveSandImg);
+        } else {
+          rocket1HatchTele.deactivate(i);
+          rocket1HatchSand.getItem(i).setImage(hatchUnactiveImg);
+          rocket1HatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 1)
+        {
+          rocket2HatchTele.activate(i);
+          rocket2HatchSand.getItem(i).setImage(hatchActiveSandImg);
+          rocket2HatchTele.getItem(i).setImage(hatchActiveSandImg);
+        } else {
+          rocket2HatchTele.deactivate(i);
+          rocket2HatchSand.getItem(i).setImage(hatchUnactiveImg);
+          rocket2HatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 1)
+        {
+          rocket1CargoTele.activate(i);
+          rocket1CargoSand.getItem(i).setImage(cargoActiveSandImg);
+          rocket1CargoTele.getItem(i).setImage(cargoActiveSandImg);
+        } else {
+          rocket1CargoTele.deactivate(i);
+          rocket1CargoSand.getItem(i).setImage(cargoUnactiveImg);
+          rocket1CargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 1)
+        {
+          rocket2CargoTele.activate(i);
+          rocket2CargoSand.getItem(i).setImage(cargoActiveSandImg);
+          rocket2CargoTele.getItem(i).setImage(cargoActiveSandImg);
+        } else {
+          rocket2CargoTele.deactivate(i);
+          rocket2CargoSand.getItem(i).setImage(cargoUnactiveImg);
+          rocket2CargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+      }
+
+      for (int i=0; i<8; i++) {
+        if ((int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 1)
+        {
+          shipHatchTele.activate(i);
+          shipHatchSand.getItem(i).setImage(hatchActiveSandImg);
+          shipHatchTele.getItem(i).setImage(hatchActiveSandImg);
+        } else {
+          shipHatchTele.deactivate(i);
+          shipHatchSand.getItem(i).setImage(hatchUnactiveImg);
+          shipHatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 1)
+        {
+          shipCargoTele.activate(i);
+          shipCargoSand.getItem(i).setImage(cargoActiveSandImg);
+          shipCargoTele.getItem(i).setImage(cargoActiveSandImg);
+        } else {
+          shipCargoTele.deactivate(i);
+          shipCargoSand.getItem(i).setImage(cargoUnactiveImg);
+          shipCargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+      }
+    }
+
+    if (theEvent.isFrom(cp5.getGroup("rocket1HatchTele")) ||
+      theEvent.isFrom(cp5.getGroup("rocket1CargoTele")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2HatchTele")) ||
+      theEvent.isFrom(cp5.getGroup("rocket2CargoTele")) || 
+      theEvent.isFrom(cp5.getGroup("shipHatchTele")) || 
+      theEvent.isFrom(cp5.getGroup("shipCargoTele"))) {
+      for (int i = 0; i<6; i++)
+      {
+        if ((int)cp5.getGroup("rocket1HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 0) {
+          rocket1HatchTele.getItem(i).setImage(hatchActiveTeleImg);
+        } else if ((int)cp5.getGroup("rocket1HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          rocket1HatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+
+
+        if ((int)cp5.getGroup("rocket2HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 0) {
+          rocket2HatchTele.getItem(i).setImage(hatchActiveTeleImg);
+        } else if ((int)cp5.getGroup("rocket2HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          rocket2HatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("rocket1CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 0) {
+          rocket1CargoTele.getItem(i).setImage(cargoActiveTeleImg);
+        } else if ((int)cp5.getGroup("rocket1CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          rocket1CargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+
+        if ((int)cp5.getGroup("rocket2CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 0) {
+          rocket2CargoTele.getItem(i).setImage(cargoActiveTeleImg);
+        } else if ((int)cp5.getGroup("rocket2CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          rocket2CargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+      }
+
+      for (int i = 0; i<8; i++)
+      {
+        if ((int)cp5.getGroup("shipCargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 0) {
+          shipCargoTele.getItem(i).setImage(cargoActiveTeleImg);
+        } else if ((int)cp5.getGroup("shipCargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          shipCargoTele.getItem(i).setImage(cargoUnactiveImg);
+        }
+
+
+        if ((int)cp5.getGroup("shipHatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 0) {
+          shipHatchTele.getItem(i).setImage(hatchActiveTeleImg);
+        } else if ((int)cp5.getGroup("shipHatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
+          shipHatchTele.getItem(i).setImage(hatchUnactiveImg);
+        }
+      }
+    }
+    if (theEvent.isFrom("scoutNum"))
+    {
+      teamInp.setText(teamId);
+    }
   }
 }
 
-/*void toggleAutoClear(boolean theFlag) {
- myTextfield.setAutoClear(theFlag);
- }*/
+
 
 void toggleDarkMode(boolean darkMode) {
-  if (darkMode == true) {
+  if (!darkMode) {
     backgroundCl=reBlack;
     textCl = white;
   } else {
@@ -905,16 +1388,91 @@ void toggleDarkMode(boolean darkMode) {
 }
 
 void submit() {
-  didWellText.submit();
-  struggledText.submit();
-  cantText.submit();
-  saveJSON();
-  addMatch();
+  if (submitable == true)
+  {
+    didWellText.submit();
+    struggledText.submit();
+    cantText.submit();
+    teamInp.submit();
+    teamId = teamInp.getStringValue();
+    hatchRocketLow = hatchRocketLow - stormRocketHatchLow;
+    cargoRocketLow = cargoRocketLow - stormCargoRocketLow;
+    hatchCargoLow = hatchCargoLow - stormCargoHatchLow;
+    cargoCargoLow = cargoCargoLow - stormCargoCargoLow;
+
+    hatchMid = hatchMid - stormHatchMid;
+    cargoMid = cargoMid - stormCargoMid;
+
+    hatchHigh = hatchHigh - stormHatchHigh;
+    cargoHigh = cargoHigh - stormCargoHigh;
+
+    saveJSON(); // Saves to JSON locally or externally
+
+    addMatch(); 
+    resetAll();
+  } else {
+    println("Can't Submit");
+    errorCode = "ERROR: Start/End-Postion/Scout-Number not selected";
+  }
+}
+Runtime r = Runtime.getRuntime();
+Process p1;
+void reconnectDrivesBut()
+{
+  try {
+    p1 = r.exec("cmd /c start " + sketchPath() + "/driveReconnect.bat");
+  }
+  catch(Exception c) {
+  }
+  //launch("driveReconnect.bat");
+}
+
+void resetBut()
+{
+  resetAll();
+}
+
+void resetAll()
+{
+  endPos = -1;
+  startPos = -1;
+  submitable = false;
+  didWellText.clear();
+  struggledText.clear();
+  cantText.clear();
+  techFoulsBut.activate(0);
+  foulsBut.activate(0);
+  startPosBut.deactivateAll();
+  endPosBut.deactivateAll();
+  rocket1CargoSand.deactivateAll();
+  rocket1CargoSand.deactivateAll();
+  rocket1HatchSand.deactivateAll();
+  rocket1CargoTele.deactivateAll();
+  rocket1HatchTele.deactivateAll();
+
+  rocket2CargoSand.deactivateAll();
+  rocket2HatchSand.deactivateAll();
+  rocket2CargoTele.deactivateAll();  
+  rocket2HatchTele.deactivateAll();
+
+  shipCargoSand.deactivateAll();
+  shipHatchSand.deactivateAll();
+  shipCargoTele.deactivateAll();
+  shipHatchTele.deactivateAll();
+
+  yellowCardTog.setState(false);
+  redCardTog.setState(false);
+  disabledTog.setState(false);
+  flippedOverTog.setState(false);
+  assistClimb.setState(false);
 }
 
 void addMatch() {
-  matchNum++;
+  if (matchNum<70) {
+    matchNum++;
+  }
   setTeamNumber(scoutNum, matchNum);
+  teamInp.setText(teamId);
 }
 
 void subtractMatch() {
@@ -922,6 +1480,7 @@ void subtractMatch() {
     matchNum--;
   }
   setTeamNumber(scoutNum, matchNum);
+  teamInp.setText(teamId);
 }
 
 
@@ -929,204 +1488,35 @@ void subtractMatch() {
 class B extends A {
 }
 
-void controlEvent(ControlEvent theEvent) {
 
-  if (theEvent.isAssignableFrom(Textfield.class)) {
-    didWell = cp5.get("didWellInput").getStringValue();
-    struggledWith = cp5.get("struggledInput").getStringValue();
-    cantDo = cp5.get("cantInput").getStringValue();
-  }
-  if (theEvent.isTab()) {
-  }
-
-  if (theEvent.isAssignableFrom(CheckBox.class)) {
-
-    stormRocketHatchLow = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(5)
-      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(5)
-      ;
-    stormCargoHatchLow =
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(0) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(1) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(2) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(3) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(4) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(5) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(6) +
-      (int)cp5.getGroup("shipHatchSand").getArrayValue(7)
-      ;
-
-    stormHatchMid = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(3)
-      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(3)
-      ;
-
-    stormHatchHigh = (int)cp5.getGroup("rocket1HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchSand").getArrayValue(1)
-      + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchSand").getArrayValue(1)
-      ;
-
-
-
-    stormCargoRocketLow = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(5)
-      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(5)
-      ;
-    stormCargoCargoLow =
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(0) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(1) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(2) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(3) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(4) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(5) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(6) +
-      (int)cp5.getGroup("shipCargoSand").getArrayValue(7)
-      ;
-
-    stormCargoMid = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(3)
-      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(3)
-      ;
-
-    stormCargoHigh = (int)cp5.getGroup("rocket1CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoSand").getArrayValue(1)
-      + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoSand").getArrayValue(1)
-      ;
-
-
-    hatchRocketLow = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(5)
-      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(4) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(5)
-      ;
-    hatchCargoLow =
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(0) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(1) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(2) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(3) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(4) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(5) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(6) +
-      (int)cp5.getGroup("shipHatchTele").getArrayValue(7)
-      ;
-
-    hatchMid = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(3)
-      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(2) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(3)
-      ;
-
-    hatchHigh = (int)cp5.getGroup("rocket1HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket1HatchTele").getArrayValue(1)
-      + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(0) + (int)cp5.getGroup("rocket2HatchTele").getArrayValue(1)
-      ;
-
-
-
-    cargoRocketLow = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(5)
-      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(4) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(5)
-      ;
-    cargoCargoLow =
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(0) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(1) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(2) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(3) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(4) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(5) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(6) +
-      (int)cp5.getGroup("shipCargoTele").getArrayValue(7)
-      ;
-
-    cargoMid = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(3)
-      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(2) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(3)
-      ;
-
-    cargoHigh = (int)cp5.getGroup("rocket1CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket1CargoTele").getArrayValue(1)
-      + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(0) + (int)cp5.getGroup("rocket2CargoTele").getArrayValue(1)
-      ;
-  }
-
-  //-----------------------------------------------------------------Penalties, Fouls, ETC--------------------------------------------------------------------
-  if (theEvent.isFrom("techFoul")) {
-    if (theEvent.getArrayValue(0) == 1) {
-      techFouls = 0;
-    } else if (theEvent.getArrayValue(1) == 1) {
-      techFouls = 1;
-    } else if (theEvent.getArrayValue(2) == 1) {
-      techFouls = 2;
-    } else if (theEvent.getArrayValue(3) == 1) {
-      techFouls = 3;
-    } else if (theEvent.getArrayValue(4) == 1) {
-      techFouls = 4;
-    }
-  }
-
-  if (theEvent.isFrom("foul")) {
-    if (theEvent.getArrayValue(0) == 1) {
-      fouls = 0;
-    } else if (theEvent.getArrayValue(1) == 1) {
-      fouls = 1;
-    } else if (theEvent.getArrayValue(2) == 1) {
-      fouls = 2;
-    } else if (theEvent.getArrayValue(3) == 1) {
-      fouls = 3;
-    } else if (theEvent.getArrayValue(4) == 1) {
-      fouls = 4;
-    } else if (theEvent.getArrayValue(5) == 1) {
-      fouls = 5;
-    }
-  }
-
-  if (theEvent.isFrom("startPos")) {
-    if (theEvent.getArrayValue(0) == 1) {
-      startPos = 1;
-    } else if (theEvent.getArrayValue(1) == 1) {
-      startPos = 2;
-    }
-  }
-
-
-  if (theEvent.isFrom("endPos")) {
-    if (theEvent.getArrayValue(0) == 1) {
-      endPos = 1;
-    } else if (theEvent.getArrayValue(1) == 1) {
-      endPos = 2;
-    } else if (theEvent.getArrayValue(2) == 1) {
-      endPos = 3;
-    }
-  }
-
-
-
-  if (theEvent.isFrom("scoutNum")) {
-    if (theEvent.getArrayValue(0) == 1) {
-      scoutNum = 1;
-    } else if (theEvent.getArrayValue(1) == 1) {
-      scoutNum = 2;
-    } else if (theEvent.getArrayValue(2) == 1) {
-      scoutNum = 3;
-    } else if (theEvent.getArrayValue(3) == 1) {
-      scoutNum = 4;
-    } else if (theEvent.getArrayValue(4) == 1) {
-      scoutNum = 5;
-    } else if (theEvent.getArrayValue(5) == 1) {
-      scoutNum = 6;
-    }
-    setTeamNumber(scoutNum,matchNum);
-  }
+//------------------------------------------------------------------------Penalties--------------------------------------------------------------------------
+void redCard(boolean toggled) {
+  redCard = toggled;
 }
-  void redCard(boolean toggled){
-    redCard = toggled;
-  }
-  void yellowCard(boolean toggled){
-    yellowCard = toggled;
-  }
-  void disabled(boolean toggled){
-    disabled = toggled;
-  }
-  void flippedOver(boolean toggled){
-    flippedOver = toggled;
-  }
+void yellowCard(boolean toggled) {
+  yellowCard = toggled;
+}
+void disabled(boolean toggled) {
+  disabled = toggled;
+}
+void flippedOver(boolean toggled) {
+  flippedOver = toggled;
+}
+
+void assist(boolean assisted) {
+  assist = assisted;
+}
 
 
-void loadJSON(){
+void loadJSON() {
   JSONArray values;
   values = loadJSONArray("dataIn.json");
 
- int numMatches = values.size();
+  int numMatches = values.size();
 
- matches = new match[numMatches + 1];
+  matches = new match[numMatches + 1];
 
-  for(int m = 0; m < numMatches; m++){
+  for (int m = 0; m < numMatches; m++) {
     JSONObject Jmatch = values.getJSONObject(m);
     int matchNum = Jmatch.getInt("match_number");
     JSONObject alliances = Jmatch.getJSONObject("alliances");
@@ -1140,54 +1530,83 @@ void loadJSON(){
     matches[matchNum].setRed(red);
     matches[matchNum].setBlue(blue);
   }
-
 }
 void saveJSON() {
 
-JSONArray values1;
-int id = (matchNum-1)*6;
-id = id+scoutNum;
-id--;
+  JSONArray values1;
+  int id = (matchNum-1)*6;
+  id = id+scoutNum;
+  id--;
 
- values1 = new JSONArray();
+  values1 = new JSONArray();
 
-i = matchNum;
-JSONObject match = new JSONObject();//(i);
+  i = matchNum;
+  JSONObject match = new JSONObject();//(i);
 
-match.setInt("Scout Number", scoutNum);
-match.setInt("Match #",matchNum);
-match.setString("Team #",teamId);
-match.setInt("Start Position", startPos);
-match.setInt("Storm Rocket Hatch Low", stormRocketHatchLow);
-match.setInt("Storm Cargo Hatch Low", stormCargoHatchLow);
-match.setInt("Storm Hatch Mid", stormHatchMid);
-match.setInt("Storm Hatch High", stormHatchHigh);
-match.setInt("Storm Cargo Rocket Low", stormCargoRocketLow);
-match.setInt("Storm Cargo Cargo Low", stormCargoCargoLow);
-match.setInt("Storm Cargo Mid", stormCargoMid);
-match.setInt("Storm Cargo High", stormCargoHigh);
-match.setInt("Hatch Rocket Low", hatchRocketLow);
-match.setInt("Hatch Cargo Low", hatchCargoLow);
-match.setInt("Hatch Mid", hatchMid);
-match.setInt("Hatch High", hatchHigh);
-match.setInt("Cargo Rocket Low", cargoRocketLow);
-match.setInt("Cargo Cargo Low", cargoCargoLow);
-match.setInt("Cargo Mid", cargoMid);
-match.setInt("Cargo High", cargoHigh);
-match.setInt("Tech Fouls", techFouls);
-match.setInt("End Position", endPos);
-match.setString("They Cant Do", cantDo);
-match.setString("They Struggled With", struggledWith);
-match.setString("They Did Well", didWell);
-match.setBoolean("Red Card", redCard);
-match.setBoolean("Yellow Card", yellowCard);
-match.setBoolean("Disabled", disabled);
-match.setBoolean("Flipped Over", flippedOver);
+  match.setInt("Scout Number", scoutNum);
+  match.setInt("Match #", matchNum);
+  match.setString("Team #", teamId);
+  match.setInt("Start Position", startPos);
+  match.setInt("Storm Rocket Hatch Low", stormRocketHatchLow);
+  match.setInt("Storm Cargo Hatch Low", stormCargoHatchLow);
+  match.setInt("Storm Hatch Mid", stormHatchMid);
+  match.setInt("Storm Hatch High", stormHatchHigh);
+  match.setInt("Storm Cargo Rocket Low", stormCargoRocketLow);
+  match.setInt("Storm Cargo Cargo Low", stormCargoCargoLow);
+  match.setInt("Storm Cargo Mid", stormCargoMid);
+  match.setInt("Storm Cargo High", stormCargoHigh);
+  match.setInt("Hatch Rocket Low", hatchRocketLow);
+  match.setInt("Hatch Cargo Low", hatchCargoLow);
+  match.setInt("Hatch Mid", hatchMid);
+  match.setInt("Hatch High", hatchHigh);
+  match.setInt("Cargo Rocket Low", cargoRocketLow);
+  match.setInt("Cargo Cargo Low", cargoCargoLow);
+  match.setInt("Cargo Mid", cargoMid);
+  match.setInt("Cargo High", cargoHigh);
+  match.setInt("Tech Fouls", techFouls);
+  match.setInt("Fouls", fouls);
+  match.setInt("End Position", endPos);
+  match.setString("They Cant Do", cantDo);
+  match.setString("They Struggled With", struggledWith);
+  match.setString("They Did Well", didWell);
+  match.setBoolean("Red Card", redCard);
+  match.setBoolean("Yellow Card", yellowCard);
+  match.setBoolean("Disabled", disabled);
+  match.setBoolean("Flipped Over", flippedOver);
+  match.setBoolean("Assisted Climb", assist);
 
-values1.setJSONObject(i-1, match);
-saveJSONArray(values1,"Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-saveJSONArray(values1,"Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-saveJSONArray(values1,"X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+  values1.setJSONObject(i-1, match);
+
+  if (saveExternal)//External and local save
+  { 
+    driveExistZ = networkTestZ.exists();
+    driveExistX = networkTestX.exists();
+    driveExistY = networkTestY.exists();
+    if (driveExistZ && driveExistX && driveExistY) {
+      //EXTERNAL
+      saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      print("External Save");
+    } else {
+      //LOCAL
+      errorCode = "ERROR: External save failed, data saved locally";
+      saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      println("External save failed, data saved locally.");
+    }
+  }
+
+
+  if (!saveExternal)//Local save
+  {
+    //LOCAL
+    saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    println("Local Save");
+  }
 }
 
 
@@ -1195,12 +1614,14 @@ saveJSONArray(values1,"X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamI
  values1.setJSONObject(i-1, match);
  saveJSONArray(values1, "data/dataOut.json");
  */
- void setTeamNumber(int scoutNum, int matchNum){
-   int teamNum;
-   if(scoutNum <= 3){
-     teamNum = matches[matchNum].getRed(scoutNum-1);
-   }else{
-     teamNum = matches[matchNum].getBlue(scoutNum-4);
-   }
-   teamId = str(teamNum);
- }
+void setTeamNumber(int scoutNum, int matchNum) {
+  int teamNum;
+  if (scoutNum <= 3) {
+    teamNum = matches[matchNum].getRed(scoutNum-1);
+    alliance = "Red";
+  } else {
+    teamNum = matches[matchNum].getBlue(scoutNum-4);
+    alliance = "Blue";
+  }
+  teamId = str(teamNum);
+}
