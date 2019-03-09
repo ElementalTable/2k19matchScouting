@@ -1439,6 +1439,7 @@ void saveJSON() {
   match.setInt("Cargo Mid", cargoMid);
   match.setInt("Cargo High", cargoHigh);
   match.setInt("Tech Fouls", techFouls);
+  match.setInt("Fouls", fouls);
   match.setInt("End Position", endPos);
   match.setString("They Cant Do", cantDo);
   match.setString("They Struggled With", struggledWith);
