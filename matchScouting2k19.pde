@@ -10,9 +10,6 @@ ControlP5 cp5;
 //#28061C Eerie Black (Unactivated Button )
 //#FFFFFF White (text color/base color)
 
-/*TODO:
- * Put numbers on the left side of the buttons.
- */
 
 match[] matches;
 //read variables
@@ -802,8 +799,8 @@ void setup () {
   cp5.getController("five").setLabel("5");
   cp5.getController("six").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("six").setLabel("6");
-  
-  
+
+
 
   startPosBut = cp5.addRadioButton("startPos")
     .setPosition(xLocation*11, yLocation*3.7)
@@ -830,6 +827,17 @@ void setup () {
   cp5.addBang("resetBut", (xLocation), (yLocation*5), 40, 40)
     .setLabel("Reset")
     .setSize(sizeing, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
+
+  cp5.addBang("reconnectDrivesBut", (xLocation*3), (yLocation*5), 40, 40)
+    .setLabel("Reconnect Drives")
+    .setSize(sizeing+60, sizeingPt2)
     .getCaptionLabel()
     .align(ControlP5.CENTER, ControlP5.CENTER)
     .setColor(textCl)
@@ -895,6 +903,7 @@ void setup () {
   cp5.getController("toggleDarkMode").moveTo("settings");
   cp5.getGroup("saveLocationBut").moveTo("settings");
   cp5.getController("resetBut").moveTo("settings");
+  cp5.getController("reconnectDrivesBut").moveTo("settings");
 
   techFoulsBut.activate(0);
   foulsBut.activate(0);
@@ -922,7 +931,6 @@ void draw () {
   stroke(textCl);
   textSize(18);
   text(errorCode, xLocation*.2, yLocation*7.3);
-  //println(errorCode);
   matchId = str(matchNum);
   //UI Elements
   if (activeTab == 0) {
@@ -985,6 +993,11 @@ void draw () {
     text("Ending Position", xLocation*11.6, yLocation*.4);
   }
 
+  if (activeTab == 4) {
+    cp5.getController("external").getCaptionLabel().setColor(color(textCl));
+    cp5.getController("local").getCaptionLabel().setColor(color(textCl));
+  }
+
   if (endPos != -1 && startPos != -1 && scoutNum != -1)
   {
     submitable = true;
@@ -992,7 +1005,6 @@ void draw () {
   } else if (endPos == -1 || startPos == -1 || scoutNum == -1)
   {
     submitable = false;
-    errorCode = "Submit Failed: Start/End Postion/Scout Number not selected";
   }
 }
 
@@ -1400,7 +1412,19 @@ void submit() {
     resetAll();
   } else {
     println("Can't Submit");
+    errorCode = "ERROR: Start/End-Postion/Scout-Number not selected";
   }
+}
+Runtime r = Runtime.getRuntime();
+Process p1;
+void reconnectDrivesBut()
+{
+  try {
+    p1 = r.exec("cmd /c start " + sketchPath() + "/driveReconnect.bat");
+  }
+  catch(Exception c) {
+  }
+  //launch("driveReconnect.bat");
 }
 
 void resetBut()
@@ -1410,7 +1434,6 @@ void resetBut()
 
 void resetAll()
 {
-  errorCode = "";
   endPos = -1;
   startPos = -1;
   submitable = false;
@@ -1566,13 +1589,12 @@ void saveJSON() {
       print("External Save");
     } else {
       //LOCAL
+      errorCode = "ERROR: External save failed, data saved locally";
       saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
       saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
       saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
       println("External save failed, data saved locally.");
-      errorCode = "External save failed, data saved locally.";
     }
-    //END TEST
   }
 
 
