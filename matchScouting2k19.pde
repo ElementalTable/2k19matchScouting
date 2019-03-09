@@ -10,22 +10,12 @@ ControlP5 cp5;
 //#28061C Eerie Black (Unactivated Button )
 //#FFFFFF White (text color/base color)
 
-/*TODO:
- * Make Cargo Circles
- * Make Hatches bigger than cargo
- * Use same visual language between rocket and cargo ship
- * Set up scoring panel as a representation of the field
- * Change box color between sandstorm, and put letter in box/circle (s for sandstorm and t for teleop)
- * Make fouls/tech fouls and penalty switches smaller
- * Put numbers on the left side of the button.
- * Change names on rocket to near rocket and far rocket
- */
 
 match[] matches;
 //read variables
 String teamId = "0000";
 String alliance = "Alliance";
-int startPos;//
+int startPos = -1;//
 int stormRocketHatchLow;//
 int stormCargoHatchLow;//
 int stormHatchMid;//
@@ -42,17 +32,30 @@ int cargoRocketLow;//
 int cargoCargoLow;//
 int cargoMid;//
 int cargoHigh;//
-int techFouls;//
-int fouls;//
-int endPos;//
-int scoutNum;//
-String cantDo;//
-String struggledWith;//
-String didWell;//
-boolean redCard;
-boolean yellowCard;
-boolean disabled;
-boolean flippedOver;
+int techFouls = 0;//
+int fouls = 0;//
+int endPos = -1;//
+int scoutNum = -1;//
+String cantDo = "Empty Field";//
+String struggledWith = "Empty Field";//
+String didWell = "Empty Field";//
+boolean redCard = false;
+boolean yellowCard = false;
+boolean disabled = false;
+boolean flippedOver = false;
+boolean assist = false;
+boolean submitable = false; 
+
+//Error suff
+boolean error = false;
+String errorCode = "";
+
+boolean driveExistZ;
+boolean driveExistX;
+boolean driveExistY;
+File networkTestZ = new File("Z://");
+File networkTestX = new File("X://");
+File networkTestY = new File("Y://");
 
 CheckBox rocket1CargoSand;
 CheckBox rocket1HatchSand;
@@ -73,6 +76,7 @@ Toggle yellowCardTog;
 Toggle redCardTog;
 Toggle disabledTog;
 Toggle flippedOverTog;
+Toggle assistClimb;
 
 RadioButton foulsBut;
 RadioButton techFoulsBut;
@@ -530,15 +534,20 @@ void setup () {
   ;
 
   cp5.getGroup("techFoul");
-  cp5.getController("zeroTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("zeroTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("zeroTech").setLabel("0");
-  cp5.getController("oneTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("oneTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("oneTech").setLabel("1");
-  cp5.getController("twoTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("twoTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("twoTech").setLabel("2");
-  cp5.getController("threeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("threeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("threeTech").setLabel("3");
-  cp5.getController("greaterThreeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("greaterThreeTech").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("greaterThreeTech").setLabel(">3");
 
 
@@ -565,17 +574,23 @@ void setup () {
     .setFont(font)
     ;
   cp5.getGroup("foul");
-  cp5.getController("zeroFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("zeroFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("zeroFoul").setLabel("0");
-  cp5.getController("oneFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("oneFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("oneFoul").setLabel("1");
-  cp5.getController("twoFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("twoFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("twoFoul").setLabel("2");
-  cp5.getController("threeFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("threeFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("threeFoul").setLabel("3");
-  cp5.getController("fourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("fourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("fourFoul").setLabel("4");
-  cp5.getController("moreThanFourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);;
+  cp5.getController("moreThanFourFoul").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20).align(ControlP5.LEFT_OUTSIDE, CENTER);
+  ;
   cp5.getController("moreThanFourFoul").setLabel(">4");
 
 
@@ -691,7 +706,7 @@ void setup () {
 
 
   endPosBut = cp5.addRadioButton("endPos")
-    .setPosition(xLocation*11.8, yLocation*1.2)
+    .setPosition(xLocation*11.8, yLocation*.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(1)
     .setSpacingColumn(xSpacing/5+(xSpacing/10))
@@ -699,19 +714,32 @@ void setup () {
     .activateEvent(true)
     .setColorActive(activeBut)
     .setColorBackground(color(unactiveBut))
+    .addItem("habZeroE", 0)
     .addItem("habOneE", 1)
     .addItem("habTwoE", 2)
     .addItem("habThreeE", 3)
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("endPos");
+  cp5.getController("habZeroE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("habZeroE").setLabel("No Climb");
   cp5.getController("habOneE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOneE").setLabel("1");
+  cp5.getController("habOneE").setLabel("Low Hab");
   cp5.getController("habTwoE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwoE").setLabel("2");
+  cp5.getController("habTwoE").setLabel("Mid Hab");
   cp5.getController("habThreeE").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habThreeE").setLabel("3");
+  cp5.getController("habThreeE").setLabel("High Hab");
+
+  assistClimb = cp5.addToggle("assist", false)
+    .setLabel("Did They Assist")
+    .setColorActive(color(activeBut))
+    .setColorBackground(color(unactiveBut))
+    .setPosition(xLocation, yLocation*1.5)
+    .setSize(sizeing+70, sizeingPt2+20)
+    .setValue(0)
+    ;
+  assistClimb.getCaptionLabel().align(CENTER, CENTER).toUpperCase(false).setFont(pfont).setSize(fontSize);
 
   //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
   cp5.addBang("addMatch", (xLocation*7+13), (yLocation*6), 40, 40)
@@ -747,17 +775,16 @@ void setup () {
     .addItem("five", 5)
     .addItem("six", 6)
     .getCaptionLabel()
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
-    teamInp = cp5.addTextfield("teamInp")
+  teamInp = cp5.addTextfield("teamInp")
     .setColorValue(color(white))
     .setPosition(xLocation*6, yLocation*.7)
     .setSize(sizeing+50, sizeingPt2*2)
     .setFont(largeFont)
     .setLabel("")
     ;
-
 
   cp5.getGroup("scoutNum");
   cp5.getController("one").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
@@ -776,7 +803,7 @@ void setup () {
 
 
   startPosBut = cp5.addRadioButton("startPos")
-    .setPosition(xLocation*11.3, yLocation*3.7)
+    .setPosition(xLocation*11, yLocation*3.7)
     .setSize(sizeingPt2, sizeingPt2)
     .setItemsPerRow(2)
     .setSpacingColumn(xSpacing+(xSpacing/10))
@@ -786,14 +813,39 @@ void setup () {
     .setColorBackground(color(unactiveBut))
     .addItem("habOne", 1)
     .addItem("habTwo", 2)
-    .setFont(font);
-  ;
+    .setFont(font)
+    ;
 
   cp5.getGroup("starPos");
   cp5.getController("habOne").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habOne").setLabel("1");
+  cp5.getController("habOne").setLabel("Low Hab");
   cp5.getController("habTwo").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
-  cp5.getController("habTwo").setLabel("2");
+  cp5.getController("habTwo").setLabel("Mid Hab");
+
+
+
+  cp5.addBang("resetBut", (xLocation), (yLocation*5), 40, 40)
+    .setLabel("Reset")
+    .setSize(sizeing, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
+
+  cp5.addBang("reconnectDrivesBut", (xLocation*3), (yLocation*5), 40, 40)
+    .setLabel("Reconnect Drives")
+    .setSize(sizeing+60, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
+
 
 
   //---------------------------------------------------------------------Save Location Button-------------------------------------------------------------
@@ -808,7 +860,8 @@ void setup () {
     .setColorBackground(color(unactiveBut))
     .addItem("external", 1)
     .addItem("local", 2)
-    .setFont(font);
+    .setFont(font)
+    ;
 
   cp5.getController("external").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
   cp5.getController("external").setLabel("Save External");
@@ -824,6 +877,7 @@ void setup () {
   cp5.getController("struggledInput").moveTo("postGame");
   cp5.getController("cantInput").moveTo("postGame");
   cp5.getController("submit").moveTo("postGame");
+  cp5.getController("assist").moveTo("postGame");
 
 
   cp5.getGroup("rocket1CargoSand").moveTo("sandstorm");
@@ -848,10 +902,12 @@ void setup () {
 
   cp5.getController("toggleDarkMode").moveTo("settings");
   cp5.getGroup("saveLocationBut").moveTo("settings");
+  cp5.getController("resetBut").moveTo("settings");
+  cp5.getController("reconnectDrivesBut").moveTo("settings");
 
   techFoulsBut.activate(0);
   foulsBut.activate(0);
-  
+
   rocket1HatchSand.setImage(hatchUnactiveImg);
   rocket2HatchSand.setImage(hatchUnactiveImg);
   rocket1CargoSand.setImage(cargoUnactiveImg);
@@ -864,7 +920,7 @@ void setup () {
   rocket2CargoTele.setImage(cargoUnactiveImg);
   shipHatchTele.setImage(hatchUnactiveImg);
   shipCargoTele.setImage(cargoUnactiveImg);
-  
+
   teamInp.setText(teamId);
 }
 
@@ -873,6 +929,8 @@ void draw () {
   background(backgroundCl);
   fill(textCl);
   stroke(textCl);
+  textSize(18);
+  text(errorCode, xLocation*.2, yLocation*7.3);
   matchId = str(matchNum);
   //UI Elements
   if (activeTab == 0) {
@@ -932,7 +990,21 @@ void draw () {
     cp5.getController("struggledInput").getCaptionLabel().setColor(color(textCl));
     cp5.getController("cantInput").getCaptionLabel().setColor(color(textCl));
     cp5.getGroup("endPos").setColorLabel(color(textCl));
-    text("Ending Position", xLocation*11, yLocation*1);
+    text("Ending Position", xLocation*11.6, yLocation*.4);
+  }
+
+  if (activeTab == 4) {
+    cp5.getController("external").getCaptionLabel().setColor(color(textCl));
+    cp5.getController("local").getCaptionLabel().setColor(color(textCl));
+  }
+
+  if (endPos != -1 && startPos != -1 && scoutNum != -1)
+  {
+    submitable = true;
+    errorCode = "";
+  } else if (endPos == -1 || startPos == -1 || scoutNum == -1)
+  {
+    submitable = false;
   }
 }
 
@@ -960,7 +1032,7 @@ abstract class A implements ControlListener {
         cp5.getController("flippedOver").moveTo("teleop");
       }
     }
-    
+
     if (theEvent.isAssignableFrom(Textfield.class)) {
       didWell = cp5.get("didWellInput").getStringValue();
       struggledWith = cp5.get("struggledInput").getStringValue();
@@ -1099,17 +1171,23 @@ abstract class A implements ControlListener {
         startPos = 1;
       } else if (theEvent.getArrayValue(1) == 1) {
         startPos = 2;
+      } else {
+        startPos = -1;
       }
     }
 
 
     if (theEvent.isFrom("endPos")) {
       if (theEvent.getArrayValue(0) == 1) {
-        endPos = 1;
+        endPos = 0;
       } else if (theEvent.getArrayValue(1) == 1) {
-        endPos = 2;
+        endPos = 1;
       } else if (theEvent.getArrayValue(2) == 1) {
+        endPos = 2;
+      } else if (theEvent.getArrayValue(3) == 1) {
         endPos = 3;
+      } else {
+        endPos = -1;
       }
     }
 
@@ -1137,8 +1215,14 @@ abstract class A implements ControlListener {
         scoutNum = 5;
       } else if (theEvent.getArrayValue(5) == 1) {
         scoutNum = 6;
+      } else {
+        scoutNum = -1;
       }
-      setTeamNumber(scoutNum, matchNum);
+
+      if (scoutNum != -1)
+      {
+        setTeamNumber(scoutNum, matchNum);
+      }
     }
 
     //-----------------------------------------------------------------Checkbox Carry Over----------------------------------------------------------------------
@@ -1232,30 +1316,34 @@ abstract class A implements ControlListener {
       {
         if ((int)cp5.getGroup("rocket1HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 0) {
           rocket1HatchTele.getItem(i).setImage(hatchActiveTeleImg);
-        } else if ((int)cp5.getGroup("rocket1HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 1) {;} 
-        else {
+        } else if ((int)cp5.getGroup("rocket1HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1HatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           rocket1HatchTele.getItem(i).setImage(hatchUnactiveImg);
         }
 
 
         if ((int)cp5.getGroup("rocket2HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 0) {
           rocket2HatchTele.getItem(i).setImage(hatchActiveTeleImg);
-        } else if ((int)cp5.getGroup("rocket2HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 1) {;} 
-        else {
+        } else if ((int)cp5.getGroup("rocket2HatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2HatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           rocket2HatchTele.getItem(i).setImage(hatchUnactiveImg);
         }
 
         if ((int)cp5.getGroup("rocket1CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 0) {
           rocket1CargoTele.getItem(i).setImage(cargoActiveTeleImg);
-        } else if ((int)cp5.getGroup("rocket1CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 1) {;} 
-        else {
+        } else if ((int)cp5.getGroup("rocket1CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket1CargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           rocket1CargoTele.getItem(i).setImage(cargoUnactiveImg);
         }
 
         if ((int)cp5.getGroup("rocket2CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 0) {
           rocket2CargoTele.getItem(i).setImage(cargoActiveTeleImg);
-        } else if ((int)cp5.getGroup("rocket2CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 1) {;} 
-        else {
+        } else if ((int)cp5.getGroup("rocket2CargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("rocket2CargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           rocket2CargoTele.getItem(i).setImage(cargoUnactiveImg);
         }
       }
@@ -1264,21 +1352,23 @@ abstract class A implements ControlListener {
       {
         if ((int)cp5.getGroup("shipCargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 0) {
           shipCargoTele.getItem(i).setImage(cargoActiveTeleImg);
-        } else if ((int)cp5.getGroup("shipCargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 1) {;} 
-        else {
+        } else if ((int)cp5.getGroup("shipCargoTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipCargoSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           shipCargoTele.getItem(i).setImage(cargoUnactiveImg);
         }
 
 
         if ((int)cp5.getGroup("shipHatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 0) {
           shipHatchTele.getItem(i).setImage(hatchActiveTeleImg);
-        } else if ((int)cp5.getGroup("shipHatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 1) {;}
-        else {
+        } else if ((int)cp5.getGroup("shipHatchTele").getArrayValue(i) == 1 && (int)cp5.getGroup("shipHatchSand").getArrayValue(i) == 1) {
+          ;
+        } else {
           shipHatchTele.getItem(i).setImage(hatchUnactiveImg);
         }
       }
     }
-    if(theEvent.isFrom("scoutNum"))
+    if (theEvent.isFrom("scoutNum"))
     {
       teamInp.setText(teamId);
     }
@@ -1298,30 +1388,58 @@ void toggleDarkMode(boolean darkMode) {
 }
 
 void submit() {
-  teamId = teamInp.getStringValue();
-  didWellText.submit();
-  struggledText.submit();
-  cantText.submit();
-  teamInp.submit();
-  hatchRocketLow = hatchRocketLow - stormRocketHatchLow;
-  cargoRocketLow = cargoRocketLow - stormCargoRocketLow;
-  hatchCargoLow = hatchCargoLow - stormCargoHatchLow;
-  cargoCargoLow = cargoCargoLow - stormCargoCargoLow;
+  if (submitable == true)
+  {
+    didWellText.submit();
+    struggledText.submit();
+    cantText.submit();
+    teamInp.submit();
+    teamId = teamInp.getStringValue();
+    hatchRocketLow = hatchRocketLow - stormRocketHatchLow;
+    cargoRocketLow = cargoRocketLow - stormCargoRocketLow;
+    hatchCargoLow = hatchCargoLow - stormCargoHatchLow;
+    cargoCargoLow = cargoCargoLow - stormCargoCargoLow;
 
-  hatchMid = hatchMid - stormHatchMid;
-  cargoMid = cargoMid - stormCargoMid;
+    hatchMid = hatchMid - stormHatchMid;
+    cargoMid = cargoMid - stormCargoMid;
 
-  hatchHigh = hatchHigh - stormHatchHigh;
-  cargoHigh = cargoHigh - stormCargoHigh;
+    hatchHigh = hatchHigh - stormHatchHigh;
+    cargoHigh = cargoHigh - stormCargoHigh;
 
-  saveJSON(); // Saves to JSON locally or externally
+    saveJSON(); // Saves to JSON locally or externally
 
-  addMatch(); 
+    addMatch(); 
+    resetAll();
+  } else {
+    println("Can't Submit");
+    errorCode = "ERROR: Start/End-Postion/Scout-Number not selected";
+  }
+}
+Runtime r = Runtime.getRuntime();
+Process p1;
+void reconnectDrivesBut()
+{
+  try {
+    p1 = r.exec("cmd /c start " + sketchPath() + "/driveReconnect.bat");
+  }
+  catch(Exception c) {
+  }
+  //launch("driveReconnect.bat");
+}
+
+void resetBut()
+{
   resetAll();
 }
 
 void resetAll()
 {
+  endPos = -1;
+  startPos = -1;
+  submitable = false;
+  didWellText.clear();
+  struggledText.clear();
+  cantText.clear();
   techFoulsBut.activate(0);
   foulsBut.activate(0);
   startPosBut.deactivateAll();
@@ -1334,7 +1452,7 @@ void resetAll()
 
   rocket2CargoSand.deactivateAll();
   rocket2HatchSand.deactivateAll();
-  rocket2CargoTele.deactivateAll();
+  rocket2CargoTele.deactivateAll();  
   rocket2HatchTele.deactivateAll();
 
   shipCargoSand.deactivateAll();
@@ -1346,10 +1464,13 @@ void resetAll()
   redCardTog.setState(false);
   disabledTog.setState(false);
   flippedOverTog.setState(false);
+  assistClimb.setState(false);
 }
 
 void addMatch() {
-  matchNum++;
+  if (matchNum<70) {
+    matchNum++;
+  }
   setTeamNumber(scoutNum, matchNum);
   teamInp.setText(teamId);
 }
@@ -1380,6 +1501,10 @@ void disabled(boolean toggled) {
 }
 void flippedOver(boolean toggled) {
   flippedOver = toggled;
+}
+
+void assist(boolean assisted) {
+  assist = assisted;
 }
 
 
@@ -1447,21 +1572,31 @@ void saveJSON() {
   match.setBoolean("Yellow Card", yellowCard);
   match.setBoolean("Disabled", disabled);
   match.setBoolean("Flipped Over", flippedOver);
+  match.setBoolean("Assisted Climb", assist);
 
   values1.setJSONObject(i-1, match);
 
   if (saveExternal)//External and local save
-  {
-    //EXTERNAL
-    saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-
-    //LOCAL
-    saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
-    saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+  { 
+    driveExistZ = networkTestZ.exists();
+    driveExistX = networkTestX.exists();
+    driveExistY = networkTestY.exists();
+    if (driveExistZ && driveExistX && driveExistY) {
+      //EXTERNAL
+      saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "Y://"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "X://"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      print("External Save");
+    } else {
+      //LOCAL
+      errorCode = "ERROR: External save failed, data saved locally";
+      saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+      println("External save failed, data saved locally.");
+    }
   }
+
 
   if (!saveExternal)//Local save
   {
@@ -1469,6 +1604,7 @@ void saveJSON() {
     saveJSONArray(values1, "data/AllData/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
     saveJSONArray(values1, "data/Matches/"+matchId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
     saveJSONArray(values1, "data/Teams/"+teamId+"/"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
+    println("Local Save");
   }
 }
 
