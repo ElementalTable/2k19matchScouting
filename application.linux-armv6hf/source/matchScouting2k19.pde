@@ -4,7 +4,7 @@ ControlP5 cp5;
 
 //Color Pallett
 //#059100 Islamic Green (main accent)
-//#000000 Registration Black (text color/base color)
+//#000000 Registration Black (text color/base color)s
 //#990000 USC Cardnial (Unactivated Buttons)
 //#16302B Medium Jungle Green (Activated Buttons)
 //#28061C Eerie Black (Unactivated Button )
@@ -36,6 +36,7 @@ int techFouls = 0;//
 int fouls = 0;//
 int endPos = -1;//
 int scoutNum = -1;//
+int broken = 0;//
 String cantDo = "Empty Field";//
 String struggledWith = "Empty Field";//
 String didWell = "Empty Field";//
@@ -77,6 +78,7 @@ Toggle redCardTog;
 Toggle disabledTog;
 Toggle flippedOverTog;
 Toggle assistClimb;
+Toggle brokenBut;
 
 RadioButton foulsBut;
 RadioButton techFoulsBut;
@@ -732,15 +734,31 @@ void setup () {
   cp5.getController("habThreeE").setLabel("High Hab");
 
   assistClimb = cp5.addToggle("assist", false)
-    .setLabel("Did They Assist")
-    .setColorActive(color(activeBut))
-    .setColorBackground(color(unactiveBut))
-    .setPosition(xLocation, yLocation*1.5)
-    .setSize(sizeing+70, sizeingPt2+20)
-    .setValue(0)
+    .setLabel("Did They Assist?")
+    .setPosition(xLocation*1.4, yLocation*2)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(activeBut)
+    .setColorBackground(unactiveBut)
     ;
-  assistClimb.getCaptionLabel().align(CENTER, CENTER).toUpperCase(false).setFont(pfont).setSize(fontSize);
+  cp5.getController("assist").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  assistClimb.getCaptionLabel().getStyle().marginLeft = 85;
+  assistClimb.getCaptionLabel().getStyle().marginTop = -27;
 
+  brokenBut = cp5.addToggle("brokenBut")
+    .setPosition(xLocation*1.4, yLocation*1.3)
+    .setSize(70, 20)
+    .setValue(false)
+    .setFont(font)
+    .setColorActive(activeBut)
+    .setColorBackground(unactiveBut)
+    ;
+
+  cp5.getController("brokenBut").getCaptionLabel().setFont(font).toUpperCase(false).setSize(20);
+  cp5.getController("brokenBut").setLabel("Broken Bot?");
+  brokenBut.getCaptionLabel().getStyle().marginLeft = 85;
+  brokenBut.getCaptionLabel().getStyle().marginTop = -27;
   //---------------------------------------------------------------------------Welcome page--------------------------------------------------------------------------------
   cp5.addBang("addMatch", (xLocation*7+13), (yLocation*6), 40, 40)
     .setFont(font)
@@ -824,7 +842,7 @@ void setup () {
 
 
 
-  cp5.addBang("resetBut", (xLocation), (yLocation*5), 40, 40)
+  cp5.addBang("resetBut", (xLocation), (yLocation*4)+60, 60, 55)
     .setLabel("Reset")
     .setSize(sizeing, sizeingPt2)
     .getCaptionLabel()
@@ -835,8 +853,19 @@ void setup () {
     .setSize(20)
     ;
 
-  cp5.addBang("reconnectDrivesBut", (xLocation*3), (yLocation*5), 40, 40)
+  cp5.addBang("reconnectDrivesBut", (xLocation), (yLocation*5)+60, 60, 55)
     .setLabel("Reconnect Drives")
+    .setSize(sizeing+60, sizeingPt2)
+    .getCaptionLabel()
+    .align(ControlP5.CENTER, ControlP5.CENTER)
+    .setColor(textCl)
+    .setFont(font)
+    .toUpperCase(false)
+    .setSize(20)
+    ;
+
+  cp5.addBang("transferDataBut", (xLocation), (yLocation*6)+60, 60, 55)
+    .setLabel("Tranfer Data")
     .setSize(sizeing+60, sizeingPt2)
     .getCaptionLabel()
     .align(ControlP5.CENTER, ControlP5.CENTER)
@@ -878,6 +907,7 @@ void setup () {
   cp5.getController("cantInput").moveTo("postGame");
   cp5.getController("submit").moveTo("postGame");
   cp5.getController("assist").moveTo("postGame");
+  cp5.getController("brokenBut").moveTo("postGame");
 
 
   cp5.getGroup("rocket1CargoSand").moveTo("sandstorm");
@@ -904,6 +934,7 @@ void setup () {
   cp5.getGroup("saveLocationBut").moveTo("settings");
   cp5.getController("resetBut").moveTo("settings");
   cp5.getController("reconnectDrivesBut").moveTo("settings");
+  cp5.getController("transferDataBut").moveTo("settings");
 
   techFoulsBut.activate(0);
   foulsBut.activate(0);
@@ -1424,7 +1455,23 @@ void reconnectDrivesBut()
   }
   catch(Exception c) {
   }
-  //launch("driveReconnect.bat");
+}
+
+void transferDataBut()
+{
+  try {
+    driveExistZ = networkTestZ.exists();
+    driveExistX = networkTestX.exists();
+    driveExistY = networkTestY.exists();
+    if (driveExistZ && driveExistX && driveExistY) {
+      errorCode = "";
+      p1 = r.exec("cmd /c start " + sketchPath() + "/localToExternal.bat");
+    } else {
+      errorCode = "ERROR: Can't transfer, drives not connected";
+    }
+  }
+  catch(Exception c) {
+  }
 }
 
 void resetBut()
@@ -1436,6 +1483,7 @@ void resetAll()
 {
   endPos = -1;
   startPos = -1;
+  broken = 0;
   submitable = false;
   didWellText.clear();
   struggledText.clear();
@@ -1507,6 +1555,15 @@ void assist(boolean assisted) {
   assist = assisted;
 }
 
+void brokenBut(boolean assisted) {
+  if (assisted)
+  {
+    broken = 1; //Broken
+  } else
+  {
+    broken = 0; //Not broken
+  }
+}
 
 void loadJSON() {
   JSONArray values;
@@ -1566,6 +1623,7 @@ void saveJSON() {
   match.setInt("Tech Fouls", techFouls);
   match.setInt("Fouls", fouls);
   match.setInt("End Position", endPos);
+  match.setInt("Broken", broken);
   match.setString("They Cant Do", cantDo);
   match.setString("They Struggled With", struggledWith);
   match.setString("They Did Well", didWell);

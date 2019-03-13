@@ -1,0 +1,16 @@
+Troubleshooting
+
+- Error: Start/End-Postion/Scout-Number not selected
+	1) Check "Welcome" page to ensure the "scout number" and the "start position" are both selected.
+	2) Check "Post-Game" page to ensure the "end position" is selected and try again.
+	3) If the error still occurs, talk to Ryan or Leo.
+
+- Error: Can't transfer, drives not connected
+	1) Click "Reconnect Drives" on the "Settings" tab and try again.
+	2) Ensure the 3 indicators are green, not red.
+	3) If the error still occurs, talk to Ryan or Leo.
+
+- Error: External save failed, data saved locally
+	1) Click "Reconnect Drives" on the "Settings" tab and try again.
+	2) Ensure the 3 indicators are green, not red.
+	3) If the error still occurs, talk to Ryan or Leo.
