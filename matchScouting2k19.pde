@@ -107,6 +107,10 @@ color backgroundCl;
 color textCl;
 color unactiveBut;
 color activeBut;
+color xStat;
+color yStat;
+color zStat;
+color disconnectCl = color(230, 10, 10);
 
 String alli;
 int i = 0;
@@ -153,7 +157,9 @@ void setup () {
   B b = new B();
   fullScreen();
   PFont pfont = createFont("Arial", 20, true); // use true/false for smooth/no-smooth
+  PFont bfont = createFont("Arial Bold", 25, true); // use true/false for smooth/no-smooth
   ControlFont font = new ControlFont(pfont, 15);
+  ControlFont medFont = new ControlFont(bfont, 25);
   ControlFont largeFont = new ControlFont(pfont, 40);
 
   hatchUnactiveImg = loadImage("../data/images/Inactive/hatchUnactive.jpg");
@@ -963,6 +969,9 @@ void draw () {
   textSize(18);
   text(errorCode, xLocation*.2, yLocation*7.3);
   matchId = str(matchNum);
+  driveExistZ = networkTestZ.exists();
+  driveExistX = networkTestX.exists();
+  driveExistY = networkTestY.exists();
   //UI Elements
   if (activeTab == 0) {
     cp5.getGroup("scoutNum").setColorLabel(color(textCl));
@@ -1027,6 +1036,48 @@ void draw () {
   if (activeTab == 4) {
     cp5.getController("external").getCaptionLabel().setColor(color(textCl));
     cp5.getController("local").getCaptionLabel().setColor(color(textCl));
+
+    text("Network Drive Status", xLocation * 1, yLocation * 2);
+    if (driveExistZ) {
+      zStat = activeBut;
+    } else {
+      zStat = disconnectCl;
+    }
+    if (driveExistX) {
+      xStat = activeBut;
+    } else {
+      xStat = disconnectCl;
+    }
+    if (driveExistY) {
+      yStat = activeBut;
+    } else {
+      yStat = disconnectCl;
+    }
+    fill(zStat);
+    ellipse(xLocation * 1.2, yLocation * 2.3, 20, 20);
+    fill(xStat);
+    ellipse(xLocation * 1.95, yLocation * 2.3, 20, 20);
+    fill(yStat);
+    ellipse(xLocation * 2.7, yLocation * 2.3, 20, 20);
+    fill(textCl);
+
+    text("Troubleshooting \n\n" +
+      "Error: Start/End-Postion/Scout-Number not selected \n" +
+      "1) Check 'Welcome' page to ensure the 'scout number' and the 'start position' are both selected.\n" +
+      "2) Check 'Post-Game' page to ensure the 'end position' is selected and try again.\n" +
+      "3) If the error still occurs, talk to Ryan or Leo.\n\n" +
+
+      "Error: Can't transfer, drives not connected\n" +
+      "1) Ensure the computer's ethernet is connected.\n" +
+      "2) Click 'Reconnect Drives' on the 'Settings' tab and try again.\n" +
+      "3) Ensure the 3 indicators are green, not red.\n" +
+      "4) If the error still occurs, talk to Ryan or Leo.\n\n" +
+
+      "Error: External save failed, data saved locally\n" +
+      "1) Ensure the computer's ethernet is connected.\n" +
+      "2) Click 'Reconnect Drives' on the 'Settings' tab and try again.\n" +
+      "3) Ensure the 3 indicators are green, not red.\n" +
+      "4) If the error still occurs, talk to Ryan or Leo.\n", (xLocation * 5), yLocation*1.5);
   }
 
   if (endPos != -1 && startPos != -1 && scoutNum != -1)
@@ -1637,9 +1688,6 @@ void saveJSON() {
 
   if (saveExternal)//External and local save
   { 
-    driveExistZ = networkTestZ.exists();
-    driveExistX = networkTestX.exists();
-    driveExistY = networkTestY.exists();
     if (driveExistZ && driveExistX && driveExistY) {
       //EXTERNAL
       saveJSONArray(values1, "Z://"+"matchNumber"+matchId+"teamNumber"+teamId+".json");
